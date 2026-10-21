@@ -1,0 +1,142 @@
+{
+  "jsonrpc": "2.0",
+  "id": 3,
+  "result": {
+    "content": [
+      {
+        "text": "每个门店的基本信息按单行展示：\n- **门店名称**: data[].storeName\n- **门店地址**: data[].address\n- **到店距离**: data[].distance\n- **门店编号**: data[].storeCode, 唯一编号，工具入参\n- **业务编码**: data[].beCode, 不为空时，唯一编号，工具入参\n- **支持预约**: data[].reservation，是否支持预约，true:支持，false:不支持\n当 reservation=true 时，⚠️ reservationTimeOptions 中的每一条数据都直接影响用户选择，缺少任何一条都会导致用户无法预约，严禁省略\ntoday=true 的日期标记星号(*)\n{\"success\":true,\"code\":200,\"message\":\"请求成功\",\"datetime\":\"2026-10-19 13:20:40\",\"traceId\":\"bd3876caa30185f9f0afc837e60af3c7\",\"data\":[{\"storeCode\":\"3350325\",\"storeName\":\"麦当劳烟台朝阳街餐厅\",\"address\":\"朝阳街A26号\",\"distance\":148,\"businessStatus\":true,\"businessStartTime\":\"06:00\",\"businessEndTime\":\"23:59\",\"longitude\":0.0,\"latitude\":0.0,\"reservation\":true,\"reservationTimeOptions\":[{\"date\":\"2026-10-19\",\"today\":true,\"reservationOptionText\":\"午餐(10:44至14:15)，下午茶(14:44至16:45)，夜市(17:14至21:45)，宵夜(22:14至23:45)\"},{\"date\":\"2026-10-20\",\"today\":false,\"reservationOptionText\":\"早餐(06:14至10:15)，午餐(10:44至14:15)，下午茶(14:44至16:45)，夜市(17:14至21:45)，宵夜(22:14至23:45)\"}]},{\"storeCode\":\"3350093\",\"storeName\":\"麦当劳烟台万达餐厅\",\"address\":\"西南河路6号万达广场2号门一二层（临近西庭扶梯处）\",\"distance\":1039,\"businessStatus\":true,\"businessStartTime\":\"00:00\",\"businessEndTime\":\"23:59\",\"longitude\":0.0,\"latitude\":0.0,\"reservation\":true,\"reservationTimeOptions\":[{\"date\":\"2026-10-19\",\"today\":true,\"reservationOptionText\":\"午餐(10:44至14:15)，下午茶(14:44至16:45)，夜市(17:14至21:45)，宵夜(22:14至23:59)\"},{\"date\":\"2026-10-20\",\"today\":false,\"reservationOptionText\":\"宵夜(00:00至04:45,22:14至23:59)，早餐(05:14至10:15)，午餐(10:44至14:15)，下午茶(14:44至16:45)，夜市(17:14至21:45)\"}]},{\"storeCode\":\"3350319\",\"storeName\":\"麦当劳烟台阳光100城市广场餐厅\",\"address\":\"海港路阳光100C座C-0104号，C-0105号，C-0126号商铺\",\"distance\":1412,\"businessStatus\":true,\"businessStartTime\":\"06:00\",\"businessEndTime\":\"23:59\",\"longitude\":0.0,\"latitude\":0.0,\"reservation\":true,\"reservationTimeOptions\":[{\"date\":\"2026-10-19\",\"today\":true,\"reservationOptionText\":\"午餐(10:44至14:15)，下午茶(14:44至16:45)，夜市(17:14至21:45)，宵夜(22:14至23:45)\"},{\"date\":\"2026-10-20\",\"today\":false,\"reservationOptionText\":\"早餐(06:14至10:15)，午餐(10:44至14:15)，下午茶(14:44至16:45)，夜市(17:14至21:45)，宵夜(22:14至23:45)\"}]},{\"storeCode\":\"3350249\",\"storeName\":\"麦当劳烟台芝罘吾悦广场餐厅\",\"address\":\"芝罘屯路吾悦广场一层麦当劳\",\"distance\":3099,\"businessStatus\":true,\"businessStartTime\":\"00:00\",\"businessEndTime\":\"23:59\",\"longitude\":0.0,\"latitude\":0.0,\"reservation\":true,\"reservationTimeOptions\":[{\"date\":\"2026-10-19\",\"today\":true,\"reservationOptionText\":\"午餐(10:44至14:15)，下午茶(14:44至16:45)，夜市(17:14至21:45)，宵夜(22:14至23:59)\"},{\"date\":\"2026-10-20\",\"today\":false,\"reservationOptionText\":\"宵夜(00:00至04:45,22:14至23:59)，早餐(05:14至10:15)，午餐(10:44至14:15)，下午茶(14:44至16:45)，夜市(17:14至21:45)\"}]},{\"storeCode\":\"3350112\",\"storeName\":\"麦当劳烟台保利餐厅\",\"address\":\"清泉路29号\",\"distance\":8434,\"businessStatus\":true,\"businessStartTime\":\"00:00\",\"businessEndTime\":\"23:59\",\"longitude\":0.0,\"latitude\":0.0,\"reservation\":true,\"reservationTimeOptions\":[{\"date\":\"2026-10-19\",\"today\":true,\"reservationOptionText\":\"午餐(10:44至14:15)，下午茶(14:44至16:45)，夜市(17:14至21:45)，宵夜(22:14至23:59)\"},{\"date\":\"2026-10-20\",\"today\":false,\"reservationOptionText\":\"宵夜(00:00至04:45,22:14至23:59)，早餐(05:14至10:15)，午餐(10:44至14:15)，下午茶(14:44至16:45)，夜市(17:14至21:45)\"}]}]}## 展示结果时，每个门店的 storeCode 和 beCode 必须完整展示，\n",
+        "type": "text"
+      }
+    ],
+    "isError": false,
+    "structuredContent": {
+      "success": true,
+      "code": 200,
+      "message": "请求成功",
+      "datetime": "2026-10-19 13:20:40",
+      "traceId": "bd3876caa30185f9f0afc837e60af3c7",
+      "data": [
+        {
+          "storeCode": "3350325",
+          "storeName": "麦当劳烟台朝阳街餐厅",
+          "address": "朝阳街A26号",
+          "distance": 148,
+          "businessStatus": true,
+          "businessStartTime": "06:00",
+          "businessEndTime": "23:59",
+          "longitude": 0.0,
+          "latitude": 0.0,
+          "reservation": true,
+          "reservationTimeOptions": [
+            {
+              "date": "2026-10-19",
+              "today": true,
+              "reservationOptionText": "午餐(10:44至14:15)，下午茶(14:44至16:45)，夜市(17:14至21:45)，宵夜(22:14至23:45)"
+            },
+            {
+              "date": "2026-10-20",
+              "today": false,
+              "reservationOptionText": "早餐(06:14至10:15)，午餐(10:44至14:15)，下午茶(14:44至16:45)，夜市(17:14至21:45)，宵夜(22:14至23:45)"
+            }
+          ]
+        },
+        {
+          "storeCode": "3350093",
+          "storeName": "麦当劳烟台万达餐厅",
+          "address": "西南河路6号万达广场2号门一二层（临近西庭扶梯处）",
+          "distance": 1039,
+          "businessStatus": true,
+          "businessStartTime": "00:00",
+          "businessEndTime": "23:59",
+          "longitude": 0.0,
+          "latitude": 0.0,
+          "reservation": true,
+          "reservationTimeOptions": [
+            {
+              "date": "2026-10-19",
+              "today": true,
+              "reservationOptionText": "午餐(10:44至14:15)，下午茶(14:44至16:45)，夜市(17:14至21:45)，宵夜(22:14至23:59)"
+            },
+            {
+              "date": "2026-10-20",
+              "today": false,
+              "reservationOptionText": "宵夜(00:00至04:45,22:14至23:59)，早餐(05:14至10:15)，午餐(10:44至14:15)，下午茶(14:44至16:45)，夜市(17:14至21:45)"
+            }
+          ]
+        },
+        {
+          "storeCode": "3350319",
+          "storeName": "麦当劳烟台阳光100城市广场餐厅",
+          "address": "海港路阳光100C座C-0104号，C-0105号，C-0126号商铺",
+          "distance": 1412,
+          "businessStatus": true,
+          "businessStartTime": "06:00",
+          "businessEndTime": "23:59",
+          "longitude": 0.0,
+          "latitude": 0.0,
+          "reservation": true,
+          "reservationTimeOptions": [
+            {
+              "date": "2026-10-19",
+              "today": true,
+              "reservationOptionText": "午餐(10:44至14:15)，下午茶(14:44至16:45)，夜市(17:14至21:45)，宵夜(22:14至23:45)"
+            },
+            {
+              "date": "2026-10-20",
+              "today": false,
+              "reservationOptionText": "早餐(06:14至10:15)，午餐(10:44至14:15)，下午茶(14:44至16:45)，夜市(17:14至21:45)，宵夜(22:14至23:45)"
+            }
+          ]
+        },
+        {
+          "storeCode": "3350249",
+          "storeName": "麦当劳烟台芝罘吾悦广场餐厅",
+          "address": "芝罘屯路吾悦广场一层麦当劳",
+          "distance": 3099,
+          "businessStatus": true,
+          "businessStartTime": "00:00",
+          "businessEndTime": "23:59",
+          "longitude": 0.0,
+          "latitude": 0.0,
+          "reservation": true,
+          "reservationTimeOptions": [
+            {
+              "date": "2026-10-19",
+              "today": true,
+              "reservationOptionText": "午餐(10:44至14:15)，下午茶(14:44至16:45)，夜市(17:14至21:45)，宵夜(22:14至23:59)"
+            },
+            {
+              "date": "2026-10-20",
+              "today": false,
+              "reservationOptionText": "宵夜(00:00至04:45,22:14至23:59)，早餐(05:14至10:15)，午餐(10:44至14:15)，下午茶(14:44至16:45)，夜市(17:14至21:45)"
+            }
+          ]
+        },
+        {
+          "storeCode": "3350112",
+          "storeName": "麦当劳烟台保利餐厅",
+          "address": "清泉路29号",
+          "distance": 8434,
+          "businessStatus": true,
+          "businessStartTime": "00:00",
+          "businessEndTime": "23:59",
+          "longitude": 0.0,
+          "latitude": 0.0,
+          "reservation": true,
+          "reservationTimeOptions": [
+            {
+              "date": "2026-10-19",
+              "today": true,
+              "reservationOptionText": "午餐(10:44至14:15)，下午茶(14:44至16:45)，夜市(17:14至21:45)，宵夜(22:14至23:59)"
+            },
+            {
+              "date": "2026-10-20",
+              "today": false,
+              "reservationOptionText": "宵夜(00:00至04:45,22:14至23:59)，早餐(05:14至10:15)，午餐(10:44至14:15)，下午茶(14:44至16:45)，夜市(17:14至21:45)"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

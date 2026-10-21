@@ -1,0 +1,880 @@
+[
+  {
+    "jsonrpc": "2.0",
+    "id": 3,
+    "result": {
+      "content": [
+        {
+          "text": "# API Response Information\n\nBelow is the response from an API call. To help you understand the data, I've provided:\n\n1. A detailed description of all fields in the response structure\n2. The complete API response\n\n## Response Structure\n\n> Content-Type: application/json\n\n- **data**: No comments found. (Type: object)\n  - **data.productOriginalPrice**: 商品原价 单位分 (Type: integer)\n  - **data.productPrice**: 商品现价 单位分 (Type: integer)\n  - **data.deliveryOriginalPrice**: 运费原价 单位分 (Type: integer)\n  - **data.deliveryPrice**: 运费现价 单位分 (Type: integer)\n  - **data.packingOriginalPrice**: 打包费原价 单位分 (Type: integer)\n  - **data.packingPrice**: 打包费现价 单位分 (Type: integer)\n  - **data.tablewarePrice**: 餐具费现价 单位分 (Type: integer)\n  - **data.originalPrice**: 原价 单位分 (Type: integer)\n  - **data.discount**: 优惠金额 单位分 (Type: integer)\n  - **data.price**: 现价 单位分 (Type: integer)\n  - **data.productList**: 商品列表 (Type: array)\n    - **data.productList[].productCode**: 商品编码 (Type: string)\n    - **data.productList[].productName**: 商品名称 (Type: string)\n    - **data.productList[].quantity**: 数量 (Type: integer)\n    - **data.productList[].originalSubtotal**: 商品原小计 单位分 (Type: integer)\n    - **data.productList[].subtotal**: 商品小计 单位分 (Type: integer)\n  - **data.takeWayList**: 可选的取餐方式选项列表 (Type: array)\n    - **data.takeWayList[].code**: 取餐方式code，到店下单时需要携带 (Type: string)\n    - **data.takeWayList[].title**: 取餐方式标题 (Type: string)\n    - **data.takeWayList[].subtitle**: 取餐方式副标题 (Type: string)\n  - **data.mealAssistanceList**: 可选的助餐服务列表 (Type: array)\n    - **data.mealAssistanceList[].code**: 助餐服务编码 (Type: string)\n    - **data.mealAssistanceList[].name**: 助餐服务名称 (Type: string)\n  - **data.enjoyed**: 已享受的优惠 (Type: object)\n    - **data.enjoyed.amountType**: 1 特价 2 折扣 3 立减 (Type: string)\n    - **data.enjoyed.realDiscount**: 实际优惠值  特价(ex:18)  折扣（ex:7.5） 立减(ex:5)  金额单位是元 与discount区别计算了tender (Type: number)\n    - **data.enjoyed.balance**: 门槛差额(可享受的优惠时才有值)，单位分 (Type: integer)\n  - **data.enjoyable**: 可享受的优惠 (Type: object)\n    - **data.enjoyable.amountType**: 1 特价 2 折扣 3 立减 (Type: string)\n    - **data.enjoyable.realDiscount**: 实际优惠值  特价(ex:18)  折扣（ex:7.5） 立减(ex:5)  金额单位是元 与discount区别计算了tender (Type: number)\n    - **data.enjoyable.balance**: 门槛差额(可享受的优惠时才有值)，单位分 (Type: integer)\n- **message**: No comments found. (Type: string)\n- **traceId**: No comments found. (Type: string)\n\n## Original Response\n\n{\"success\":true,\"code\":200,\"message\":\"请求成功\",\"datetime\":\"2026-10-21 18:41:10\",\"traceId\":\"2f93279cf91ebee52736feda0955e0d2\",\"data\":{\"productOriginalPrice\":85870,\"productPrice\":85370,\"originalPrice\":85870,\"discount\":500,\"price\":85370,\"productList\":[{\"productCode\":\"9900005456\",\"productName\":\"麦辣鸡腿汉堡三件套\",\"quantity\":1,\"originalSubtotal\":3400,\"subtotal\":3400},{\"productCode\":\"511781\",\"productName\":\"培根安格斯厚牛堡\",\"quantity\":1,\"originalSubtotal\":3450,\"subtotal\":3450},{\"productCode\":\"6352\",\"productName\":\"阳光橙麦炫酷\",\"quantity\":1,\"originalSubtotal\":1350,\"subtotal\":1350},{\"productCode\":\"511782\",\"productName\":\"芝士安格斯厚牛堡\",\"quantity\":1,\"originalSubtotal\":3150,\"subtotal\":3150},{\"productCode\":\"2430\",\"productName\":\"【美汁源】“黄金橙橙”\",\"quantity\":1,\"originalSubtotal\":1300,\"subtotal\":1300},{\"productCode\":\"521986\",\"productName\":\"马苏里拉拉丝芝士条\",\"quantity\":1,\"originalSubtotal\":1600,\"subtotal\":1100},{\"productCode\":\"9900011056\",\"productName\":\"全明星双人分享餐八件套\",\"quantity\":1,\"originalSubtotal\":11750,\"subtotal\":11750},{\"productCode\":\"9900016075\",\"productName\":\"龙焰芝士棒鸡腿堡三件套\",\"quantity\":1,\"originalSubtotal\":2990,\"subtotal\":2990},{\"productCode\":\"9900016073\",\"productName\":\"龙焰鸡腿堡三件套\",\"quantity\":1,\"originalSubtotal\":2690,\"subtotal\":2690},{\"productCode\":\"9900005460\",\"productName\":\"麦香鱼中套餐\",\"quantity\":1,\"originalSubtotal\":3350,\"subtotal\":3350},{\"productCode\":\"9900005462\",\"productName\":\"板烧鸡腿堡三件套\",\"quantity\":1,\"originalSubtotal\":3500,\"subtotal\":3500},{\"productCode\":\"3755\",\"productName\":\"纯牛奶\",\"quantity\":1,\"originalSubtotal\":1050,\"subtotal\":1050},{\"productCode\":\"9900005464\",\"productName\":\"双层吉士汉堡中套餐\",\"quantity\":1,\"originalSubtotal\":3400,\"subtotal\":3400},{\"productCode\":\"9900004236\",\"productName\":\"人气超值四件套随心选\",\"quantity\":1,\"originalSubtotal\":5800,\"subtotal\":5800},{\"productCode\":\"3757\",\"productName\":\"纯悦\",\"quantity\":1,\"originalSubtotal\":750,\"subtotal\":750},{\"productCode\":\"9900005466\",\"productName\":\"巨无霸三件套\",\"quantity\":1,\"originalSubtotal\":3700,\"subtotal\":3700},{\"productCode\":\"521914\",\"productName\":\"“葱不求人“按摩捶痒痒挠\",\"quantity\":1,\"originalSubtotal\":1490,\"subtotal\":1490},{\"productCode\":\"6362\",\"productName\":\"100%苹果汁\",\"quantity\":1,\"originalSubtotal\":1150,\"subtotal\":1150},{\"productCode\":\"9900005449\",\"productName\":\"吉士汉堡包中套餐\",\"quantity\":1,\"originalSubtotal\":2600,\"subtotal\":2600},{\"productCode\":\"3010\",\"productName\":\"雪碧小杯\",\"quantity\":1,\"originalSubtotal\":950,\"subtotal\":950},{\"productCode\":\"9900010110\",\"productName\":\"鱼牛汉堡四件套随心选\",\"quantity\":1,\"originalSubtotal\":5900,\"subtotal\":5900},{\"productCode\":\"1106\",\"productName\":\"培根蔬萃双层牛堡\",\"quantity\":1,\"originalSubtotal\":2450,\"subtotal\":2450},{\"productCode\":\"1100\",\"productName\":\"巨无霸\",\"quantity\":1,\"originalSubtotal\":2600,\"subtotal\":2600},{\"productCode\":\"9900005451\",\"productName\":\"麦辣鸡翅4块中套餐\",\"quantity\":1,\"originalSubtotal\":3650,\"subtotal\":3650},{\"productCode\":\"9900005453\",\"productName\":\"麦香鸡中套餐\",\"quantity\":1,\"originalSubtotal\":2800,\"subtotal\":2800},{\"productCode\":\"507394\",\"productName\":\"热牛奶中杯\",\"quantity\":1,\"originalSubtotal\":1900,\"subtotal\":1900},{\"productCode\":\"9900008746\",\"productName\":\"鸡肉堡单品精选\",\"quantity\":1,\"originalSubtotal\":2400,\"subtotal\":2400},{\"productCode\":\"9900008745\",\"productName\":\"新地\",\"quantity\":1,\"originalSubtotal\":1300,\"subtotal\":1300},{\"productCode\":\"515520\",\"productName\":\"中杯怡泉+C\",\"quantity\":1,\"originalSubtotal\":1150,\"subtotal\":1150},{\"productCode\":\"1120\",\"productName\":\"双层吉士汉堡\",\"quantity\":1,\"originalSubtotal\":2300,\"subtotal\":2300}],\"takeWayList\":[{\"code\":\"eat-in\",\"title\":\"堂食\",\"subtitle\":\"店内用餐\"},{\"code\":\"take-in-store\",\"title\":\"外带\",\"subtitle\":\"店内自提\"}]}}",
+          "type": "text"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "success": true,
+        "code": 200,
+        "message": "请求成功",
+        "datetime": "2026-10-21 18:41:10",
+        "traceId": "2f93279cf91ebee52736feda0955e0d2",
+        "data": {
+          "productOriginalPrice": 85870,
+          "productPrice": 85370,
+          "originalPrice": 85870,
+          "discount": 500,
+          "price": 85370,
+          "productList": [
+            {
+              "productCode": "9900005456",
+              "productName": "麦辣鸡腿汉堡三件套",
+              "quantity": 1,
+              "originalSubtotal": 3400,
+              "subtotal": 3400
+            },
+            {
+              "productCode": "511781",
+              "productName": "培根安格斯厚牛堡",
+              "quantity": 1,
+              "originalSubtotal": 3450,
+              "subtotal": 3450
+            },
+            {
+              "productCode": "6352",
+              "productName": "阳光橙麦炫酷",
+              "quantity": 1,
+              "originalSubtotal": 1350,
+              "subtotal": 1350
+            },
+            {
+              "productCode": "511782",
+              "productName": "芝士安格斯厚牛堡",
+              "quantity": 1,
+              "originalSubtotal": 3150,
+              "subtotal": 3150
+            },
+            {
+              "productCode": "2430",
+              "productName": "【美汁源】“黄金橙橙”",
+              "quantity": 1,
+              "originalSubtotal": 1300,
+              "subtotal": 1300
+            },
+            {
+              "productCode": "521986",
+              "productName": "马苏里拉拉丝芝士条",
+              "quantity": 1,
+              "originalSubtotal": 1600,
+              "subtotal": 1100
+            },
+            {
+              "productCode": "9900011056",
+              "productName": "全明星双人分享餐八件套",
+              "quantity": 1,
+              "originalSubtotal": 11750,
+              "subtotal": 11750
+            },
+            {
+              "productCode": "9900016075",
+              "productName": "龙焰芝士棒鸡腿堡三件套",
+              "quantity": 1,
+              "originalSubtotal": 2990,
+              "subtotal": 2990
+            },
+            {
+              "productCode": "9900016073",
+              "productName": "龙焰鸡腿堡三件套",
+              "quantity": 1,
+              "originalSubtotal": 2690,
+              "subtotal": 2690
+            },
+            {
+              "productCode": "9900005460",
+              "productName": "麦香鱼中套餐",
+              "quantity": 1,
+              "originalSubtotal": 3350,
+              "subtotal": 3350
+            },
+            {
+              "productCode": "9900005462",
+              "productName": "板烧鸡腿堡三件套",
+              "quantity": 1,
+              "originalSubtotal": 3500,
+              "subtotal": 3500
+            },
+            {
+              "productCode": "3755",
+              "productName": "纯牛奶",
+              "quantity": 1,
+              "originalSubtotal": 1050,
+              "subtotal": 1050
+            },
+            {
+              "productCode": "9900005464",
+              "productName": "双层吉士汉堡中套餐",
+              "quantity": 1,
+              "originalSubtotal": 3400,
+              "subtotal": 3400
+            },
+            {
+              "productCode": "9900004236",
+              "productName": "人气超值四件套随心选",
+              "quantity": 1,
+              "originalSubtotal": 5800,
+              "subtotal": 5800
+            },
+            {
+              "productCode": "3757",
+              "productName": "纯悦",
+              "quantity": 1,
+              "originalSubtotal": 750,
+              "subtotal": 750
+            },
+            {
+              "productCode": "9900005466",
+              "productName": "巨无霸三件套",
+              "quantity": 1,
+              "originalSubtotal": 3700,
+              "subtotal": 3700
+            },
+            {
+              "productCode": "521914",
+              "productName": "“葱不求人“按摩捶痒痒挠",
+              "quantity": 1,
+              "originalSubtotal": 1490,
+              "subtotal": 1490
+            },
+            {
+              "productCode": "6362",
+              "productName": "100%苹果汁",
+              "quantity": 1,
+              "originalSubtotal": 1150,
+              "subtotal": 1150
+            },
+            {
+              "productCode": "9900005449",
+              "productName": "吉士汉堡包中套餐",
+              "quantity": 1,
+              "originalSubtotal": 2600,
+              "subtotal": 2600
+            },
+            {
+              "productCode": "3010",
+              "productName": "雪碧小杯",
+              "quantity": 1,
+              "originalSubtotal": 950,
+              "subtotal": 950
+            },
+            {
+              "productCode": "9900010110",
+              "productName": "鱼牛汉堡四件套随心选",
+              "quantity": 1,
+              "originalSubtotal": 5900,
+              "subtotal": 5900
+            },
+            {
+              "productCode": "1106",
+              "productName": "培根蔬萃双层牛堡",
+              "quantity": 1,
+              "originalSubtotal": 2450,
+              "subtotal": 2450
+            },
+            {
+              "productCode": "1100",
+              "productName": "巨无霸",
+              "quantity": 1,
+              "originalSubtotal": 2600,
+              "subtotal": 2600
+            },
+            {
+              "productCode": "9900005451",
+              "productName": "麦辣鸡翅4块中套餐",
+              "quantity": 1,
+              "originalSubtotal": 3650,
+              "subtotal": 3650
+            },
+            {
+              "productCode": "9900005453",
+              "productName": "麦香鸡中套餐",
+              "quantity": 1,
+              "originalSubtotal": 2800,
+              "subtotal": 2800
+            },
+            {
+              "productCode": "507394",
+              "productName": "热牛奶中杯",
+              "quantity": 1,
+              "originalSubtotal": 1900,
+              "subtotal": 1900
+            },
+            {
+              "productCode": "9900008746",
+              "productName": "鸡肉堡单品精选",
+              "quantity": 1,
+              "originalSubtotal": 2400,
+              "subtotal": 2400
+            },
+            {
+              "productCode": "9900008745",
+              "productName": "新地",
+              "quantity": 1,
+              "originalSubtotal": 1300,
+              "subtotal": 1300
+            },
+            {
+              "productCode": "515520",
+              "productName": "中杯怡泉+C",
+              "quantity": 1,
+              "originalSubtotal": 1150,
+              "subtotal": 1150
+            },
+            {
+              "productCode": "1120",
+              "productName": "双层吉士汉堡",
+              "quantity": 1,
+              "originalSubtotal": 2300,
+              "subtotal": 2300
+            }
+          ],
+          "takeWayList": [
+            {
+              "code": "eat-in",
+              "title": "堂食",
+              "subtitle": "店内用餐"
+            },
+            {
+              "code": "take-in-store",
+              "title": "外带",
+              "subtitle": "店内自提"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "jsonrpc": "2.0",
+    "id": 4,
+    "result": {
+      "content": [
+        {
+          "text": "# API Response Information\n\nBelow is the response from an API call. To help you understand the data, I've provided:\n\n1. A detailed description of all fields in the response structure\n2. The complete API response\n\n## Response Structure\n\n> Content-Type: application/json\n\n- **data**: No comments found. (Type: object)\n  - **data.productOriginalPrice**: 商品原价 单位分 (Type: integer)\n  - **data.productPrice**: 商品现价 单位分 (Type: integer)\n  - **data.deliveryOriginalPrice**: 运费原价 单位分 (Type: integer)\n  - **data.deliveryPrice**: 运费现价 单位分 (Type: integer)\n  - **data.packingOriginalPrice**: 打包费原价 单位分 (Type: integer)\n  - **data.packingPrice**: 打包费现价 单位分 (Type: integer)\n  - **data.tablewarePrice**: 餐具费现价 单位分 (Type: integer)\n  - **data.originalPrice**: 原价 单位分 (Type: integer)\n  - **data.discount**: 优惠金额 单位分 (Type: integer)\n  - **data.price**: 现价 单位分 (Type: integer)\n  - **data.productList**: 商品列表 (Type: array)\n    - **data.productList[].productCode**: 商品编码 (Type: string)\n    - **data.productList[].productName**: 商品名称 (Type: string)\n    - **data.productList[].quantity**: 数量 (Type: integer)\n    - **data.productList[].originalSubtotal**: 商品原小计 单位分 (Type: integer)\n    - **data.productList[].subtotal**: 商品小计 单位分 (Type: integer)\n  - **data.takeWayList**: 可选的取餐方式选项列表 (Type: array)\n    - **data.takeWayList[].code**: 取餐方式code，到店下单时需要携带 (Type: string)\n    - **data.takeWayList[].title**: 取餐方式标题 (Type: string)\n    - **data.takeWayList[].subtitle**: 取餐方式副标题 (Type: string)\n  - **data.mealAssistanceList**: 可选的助餐服务列表 (Type: array)\n    - **data.mealAssistanceList[].code**: 助餐服务编码 (Type: string)\n    - **data.mealAssistanceList[].name**: 助餐服务名称 (Type: string)\n  - **data.enjoyed**: 已享受的优惠 (Type: object)\n    - **data.enjoyed.amountType**: 1 特价 2 折扣 3 立减 (Type: string)\n    - **data.enjoyed.realDiscount**: 实际优惠值  特价(ex:18)  折扣（ex:7.5） 立减(ex:5)  金额单位是元 与discount区别计算了tender (Type: number)\n    - **data.enjoyed.balance**: 门槛差额(可享受的优惠时才有值)，单位分 (Type: integer)\n  - **data.enjoyable**: 可享受的优惠 (Type: object)\n    - **data.enjoyable.amountType**: 1 特价 2 折扣 3 立减 (Type: string)\n    - **data.enjoyable.realDiscount**: 实际优惠值  特价(ex:18)  折扣（ex:7.5） 立减(ex:5)  金额单位是元 与discount区别计算了tender (Type: number)\n    - **data.enjoyable.balance**: 门槛差额(可享受的优惠时才有值)，单位分 (Type: integer)\n- **message**: No comments found. (Type: string)\n- **traceId**: No comments found. (Type: string)\n\n## Original Response\n\n{\"success\":true,\"code\":200,\"message\":\"请求成功\",\"datetime\":\"2026-10-21 18:41:10\",\"traceId\":\"080e1831cd6e07508c96154857cb7fd8\",\"data\":{\"productOriginalPrice\":84290,\"productPrice\":84290,\"originalPrice\":84290,\"discount\":0,\"price\":84290,\"productList\":[{\"productCode\":\"9900008751\",\"productName\":\"可乐\",\"quantity\":1,\"originalSubtotal\":950,\"subtotal\":950},{\"productCode\":\"9900006332\",\"productName\":\"薄皮V翅双拼十翅\",\"quantity\":1,\"originalSubtotal\":4990,\"subtotal\":4990},{\"productCode\":\"9900008752\",\"productName\":\"派\",\"quantity\":1,\"originalSubtotal\":850,\"subtotal\":850},{\"productCode\":\"9900008754\",\"productName\":\"经典麦旋风\",\"quantity\":1,\"originalSubtotal\":1500,\"subtotal\":1500},{\"productCode\":\"9900005468\",\"productName\":\"培根蔬萃双层牛堡三件套\",\"quantity\":1,\"originalSubtotal\":3550,\"subtotal\":3550},{\"productCode\":\"514782\",\"productName\":\"脆脆薯条\",\"quantity\":1,\"originalSubtotal\":1600,\"subtotal\":1600},{\"productCode\":\"9900006957\",\"productName\":\"安格斯厚牛堡四件套随心选\",\"quantity\":1,\"originalSubtotal\":6650,\"subtotal\":6650},{\"productCode\":\"1401\",\"productName\":\"麦乐鸡5块\",\"quantity\":1,\"originalSubtotal\":1450,\"subtotal\":1450},{\"productCode\":\"1406\",\"productName\":\"板烧鸡腿堡\",\"quantity\":1,\"originalSubtotal\":2400,\"subtotal\":2400},{\"productCode\":\"9900005413\",\"productName\":\"双层深海鳕鱼堡三件套\",\"quantity\":1,\"originalSubtotal\":3500,\"subtotal\":3500},{\"productCode\":\"9900016309\",\"productName\":\"龙焰鸡腿堡四件套\",\"quantity\":1,\"originalSubtotal\":5800,\"subtotal\":5800},{\"productCode\":\"9900015730\",\"productName\":\"BFF四宫格小食盘\",\"quantity\":1,\"originalSubtotal\":4030,\"subtotal\":4030},{\"productCode\":\"521946\",\"productName\":\"旋旋星愿贴\",\"quantity\":1,\"originalSubtotal\":390,\"subtotal\":390},{\"productCode\":\"9900016311\",\"productName\":\"龙焰美味四件套\",\"quantity\":1,\"originalSubtotal\":5800,\"subtotal\":5800},{\"productCode\":\"9900016310\",\"productName\":\"龙焰芝士棒鸡腿堡四件套\",\"quantity\":1,\"originalSubtotal\":5800,\"subtotal\":5800},{\"productCode\":\"521156\",\"productName\":\"那么大鸡排（椒盐风味）\",\"quantity\":1,\"originalSubtotal\":1400,\"subtotal\":1400},{\"productCode\":\"9900004835\",\"productName\":\"麦乐鸡经典中套餐\",\"quantity\":1,\"originalSubtotal\":2550,\"subtotal\":2550},{\"productCode\":\"510488\",\"productName\":\"热燕麦奶中杯\",\"quantity\":1,\"originalSubtotal\":2100,\"subtotal\":2100},{\"productCode\":\"4648\",\"productName\":\"不素之霸双层牛堡\",\"quantity\":1,\"originalSubtotal\":2650,\"subtotal\":2650},{\"productCode\":\"9900003586\",\"productName\":\"双层深海鳕鱼堡\",\"quantity\":1,\"originalSubtotal\":2400,\"subtotal\":2400},{\"productCode\":\"9900000890\",\"productName\":\"板烧鸡腿堡四件套\",\"quantity\":1,\"originalSubtotal\":5800,\"subtotal\":5800},{\"productCode\":\"521950\",\"productName\":\"蓝莓爆爆珠麦旋风\",\"quantity\":1,\"originalSubtotal\":1600,\"subtotal\":1600},{\"productCode\":\"9900013304\",\"productName\":\"人气经典随心配\",\"quantity\":1,\"originalSubtotal\":1490,\"subtotal\":1490},{\"productCode\":\"521951\",\"productName\":\"灰焰圆筒\",\"quantity\":1,\"originalSubtotal\":500,\"subtotal\":500},{\"productCode\":\"9900011126\",\"productName\":\"酥脆无双套餐\",\"quantity\":1,\"originalSubtotal\":2000,\"subtotal\":2000},{\"productCode\":\"521952\",\"productName\":\"龙焰鸡腿堡\",\"quantity\":1,\"originalSubtotal\":2450,\"subtotal\":2450},{\"productCode\":\"9900015602\",\"productName\":\"大堡口福三件套\",\"quantity\":1,\"originalSubtotal\":2290,\"subtotal\":2290},{\"productCode\":\"521953\",\"productName\":\"龙焰芝士棒鸡腿堡\",\"quantity\":1,\"originalSubtotal\":2750,\"subtotal\":2750},{\"productCode\":\"9900011128\",\"productName\":\"“堡”你欢乐套餐\",\"quantity\":1,\"originalSubtotal\":2800,\"subtotal\":2800},{\"productCode\":\"521316\",\"productName\":\"高达吉士双牛堡\",\"quantity\":1,\"originalSubtotal\":2250,\"subtotal\":2250}],\"takeWayList\":[{\"code\":\"eat-in\",\"title\":\"堂食\",\"subtitle\":\"店内用餐\"},{\"code\":\"take-in-store\",\"title\":\"外带\",\"subtitle\":\"店内自提\"}]}}",
+          "type": "text"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "success": true,
+        "code": 200,
+        "message": "请求成功",
+        "datetime": "2026-10-21 18:41:10",
+        "traceId": "080e1831cd6e07508c96154857cb7fd8",
+        "data": {
+          "productOriginalPrice": 84290,
+          "productPrice": 84290,
+          "originalPrice": 84290,
+          "discount": 0,
+          "price": 84290,
+          "productList": [
+            {
+              "productCode": "9900008751",
+              "productName": "可乐",
+              "quantity": 1,
+              "originalSubtotal": 950,
+              "subtotal": 950
+            },
+            {
+              "productCode": "9900006332",
+              "productName": "薄皮V翅双拼十翅",
+              "quantity": 1,
+              "originalSubtotal": 4990,
+              "subtotal": 4990
+            },
+            {
+              "productCode": "9900008752",
+              "productName": "派",
+              "quantity": 1,
+              "originalSubtotal": 850,
+              "subtotal": 850
+            },
+            {
+              "productCode": "9900008754",
+              "productName": "经典麦旋风",
+              "quantity": 1,
+              "originalSubtotal": 1500,
+              "subtotal": 1500
+            },
+            {
+              "productCode": "9900005468",
+              "productName": "培根蔬萃双层牛堡三件套",
+              "quantity": 1,
+              "originalSubtotal": 3550,
+              "subtotal": 3550
+            },
+            {
+              "productCode": "514782",
+              "productName": "脆脆薯条",
+              "quantity": 1,
+              "originalSubtotal": 1600,
+              "subtotal": 1600
+            },
+            {
+              "productCode": "9900006957",
+              "productName": "安格斯厚牛堡四件套随心选",
+              "quantity": 1,
+              "originalSubtotal": 6650,
+              "subtotal": 6650
+            },
+            {
+              "productCode": "1401",
+              "productName": "麦乐鸡5块",
+              "quantity": 1,
+              "originalSubtotal": 1450,
+              "subtotal": 1450
+            },
+            {
+              "productCode": "1406",
+              "productName": "板烧鸡腿堡",
+              "quantity": 1,
+              "originalSubtotal": 2400,
+              "subtotal": 2400
+            },
+            {
+              "productCode": "9900005413",
+              "productName": "双层深海鳕鱼堡三件套",
+              "quantity": 1,
+              "originalSubtotal": 3500,
+              "subtotal": 3500
+            },
+            {
+              "productCode": "9900016309",
+              "productName": "龙焰鸡腿堡四件套",
+              "quantity": 1,
+              "originalSubtotal": 5800,
+              "subtotal": 5800
+            },
+            {
+              "productCode": "9900015730",
+              "productName": "BFF四宫格小食盘",
+              "quantity": 1,
+              "originalSubtotal": 4030,
+              "subtotal": 4030
+            },
+            {
+              "productCode": "521946",
+              "productName": "旋旋星愿贴",
+              "quantity": 1,
+              "originalSubtotal": 390,
+              "subtotal": 390
+            },
+            {
+              "productCode": "9900016311",
+              "productName": "龙焰美味四件套",
+              "quantity": 1,
+              "originalSubtotal": 5800,
+              "subtotal": 5800
+            },
+            {
+              "productCode": "9900016310",
+              "productName": "龙焰芝士棒鸡腿堡四件套",
+              "quantity": 1,
+              "originalSubtotal": 5800,
+              "subtotal": 5800
+            },
+            {
+              "productCode": "521156",
+              "productName": "那么大鸡排（椒盐风味）",
+              "quantity": 1,
+              "originalSubtotal": 1400,
+              "subtotal": 1400
+            },
+            {
+              "productCode": "9900004835",
+              "productName": "麦乐鸡经典中套餐",
+              "quantity": 1,
+              "originalSubtotal": 2550,
+              "subtotal": 2550
+            },
+            {
+              "productCode": "510488",
+              "productName": "热燕麦奶中杯",
+              "quantity": 1,
+              "originalSubtotal": 2100,
+              "subtotal": 2100
+            },
+            {
+              "productCode": "4648",
+              "productName": "不素之霸双层牛堡",
+              "quantity": 1,
+              "originalSubtotal": 2650,
+              "subtotal": 2650
+            },
+            {
+              "productCode": "9900003586",
+              "productName": "双层深海鳕鱼堡",
+              "quantity": 1,
+              "originalSubtotal": 2400,
+              "subtotal": 2400
+            },
+            {
+              "productCode": "9900000890",
+              "productName": "板烧鸡腿堡四件套",
+              "quantity": 1,
+              "originalSubtotal": 5800,
+              "subtotal": 5800
+            },
+            {
+              "productCode": "521950",
+              "productName": "蓝莓爆爆珠麦旋风",
+              "quantity": 1,
+              "originalSubtotal": 1600,
+              "subtotal": 1600
+            },
+            {
+              "productCode": "9900013304",
+              "productName": "人气经典随心配",
+              "quantity": 1,
+              "originalSubtotal": 1490,
+              "subtotal": 1490
+            },
+            {
+              "productCode": "521951",
+              "productName": "灰焰圆筒",
+              "quantity": 1,
+              "originalSubtotal": 500,
+              "subtotal": 500
+            },
+            {
+              "productCode": "9900011126",
+              "productName": "酥脆无双套餐",
+              "quantity": 1,
+              "originalSubtotal": 2000,
+              "subtotal": 2000
+            },
+            {
+              "productCode": "521952",
+              "productName": "龙焰鸡腿堡",
+              "quantity": 1,
+              "originalSubtotal": 2450,
+              "subtotal": 2450
+            },
+            {
+              "productCode": "9900015602",
+              "productName": "大堡口福三件套",
+              "quantity": 1,
+              "originalSubtotal": 2290,
+              "subtotal": 2290
+            },
+            {
+              "productCode": "521953",
+              "productName": "龙焰芝士棒鸡腿堡",
+              "quantity": 1,
+              "originalSubtotal": 2750,
+              "subtotal": 2750
+            },
+            {
+              "productCode": "9900011128",
+              "productName": "“堡”你欢乐套餐",
+              "quantity": 1,
+              "originalSubtotal": 2800,
+              "subtotal": 2800
+            },
+            {
+              "productCode": "521316",
+              "productName": "高达吉士双牛堡",
+              "quantity": 1,
+              "originalSubtotal": 2250,
+              "subtotal": 2250
+            }
+          ],
+          "takeWayList": [
+            {
+              "code": "eat-in",
+              "title": "堂食",
+              "subtitle": "店内用餐"
+            },
+            {
+              "code": "take-in-store",
+              "title": "外带",
+              "subtitle": "店内自提"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "jsonrpc": "2.0",
+    "id": 5,
+    "result": {
+      "content": [
+        {
+          "text": "# API Response Information\n\nBelow is the response from an API call. To help you understand the data, I've provided:\n\n1. A detailed description of all fields in the response structure\n2. The complete API response\n\n## Response Structure\n\n> Content-Type: application/json\n\n- **data**: No comments found. (Type: object)\n  - **data.productOriginalPrice**: 商品原价 单位分 (Type: integer)\n  - **data.productPrice**: 商品现价 单位分 (Type: integer)\n  - **data.deliveryOriginalPrice**: 运费原价 单位分 (Type: integer)\n  - **data.deliveryPrice**: 运费现价 单位分 (Type: integer)\n  - **data.packingOriginalPrice**: 打包费原价 单位分 (Type: integer)\n  - **data.packingPrice**: 打包费现价 单位分 (Type: integer)\n  - **data.tablewarePrice**: 餐具费现价 单位分 (Type: integer)\n  - **data.originalPrice**: 原价 单位分 (Type: integer)\n  - **data.discount**: 优惠金额 单位分 (Type: integer)\n  - **data.price**: 现价 单位分 (Type: integer)\n  - **data.productList**: 商品列表 (Type: array)\n    - **data.productList[].productCode**: 商品编码 (Type: string)\n    - **data.productList[].productName**: 商品名称 (Type: string)\n    - **data.productList[].quantity**: 数量 (Type: integer)\n    - **data.productList[].originalSubtotal**: 商品原小计 单位分 (Type: integer)\n    - **data.productList[].subtotal**: 商品小计 单位分 (Type: integer)\n  - **data.takeWayList**: 可选的取餐方式选项列表 (Type: array)\n    - **data.takeWayList[].code**: 取餐方式code，到店下单时需要携带 (Type: string)\n    - **data.takeWayList[].title**: 取餐方式标题 (Type: string)\n    - **data.takeWayList[].subtitle**: 取餐方式副标题 (Type: string)\n  - **data.mealAssistanceList**: 可选的助餐服务列表 (Type: array)\n    - **data.mealAssistanceList[].code**: 助餐服务编码 (Type: string)\n    - **data.mealAssistanceList[].name**: 助餐服务名称 (Type: string)\n  - **data.enjoyed**: 已享受的优惠 (Type: object)\n    - **data.enjoyed.amountType**: 1 特价 2 折扣 3 立减 (Type: string)\n    - **data.enjoyed.realDiscount**: 实际优惠值  特价(ex:18)  折扣（ex:7.5） 立减(ex:5)  金额单位是元 与discount区别计算了tender (Type: number)\n    - **data.enjoyed.balance**: 门槛差额(可享受的优惠时才有值)，单位分 (Type: integer)\n  - **data.enjoyable**: 可享受的优惠 (Type: object)\n    - **data.enjoyable.amountType**: 1 特价 2 折扣 3 立减 (Type: string)\n    - **data.enjoyable.realDiscount**: 实际优惠值  特价(ex:18)  折扣（ex:7.5） 立减(ex:5)  金额单位是元 与discount区别计算了tender (Type: number)\n    - **data.enjoyable.balance**: 门槛差额(可享受的优惠时才有值)，单位分 (Type: integer)\n- **message**: No comments found. (Type: string)\n- **traceId**: No comments found. (Type: string)\n\n## Original Response\n\n{\"success\":true,\"code\":200,\"message\":\"请求成功\",\"datetime\":\"2026-10-21 18:41:10\",\"traceId\":\"1b3ec414856280b70e6fce21938593d6\",\"data\":{\"productOriginalPrice\":115770,\"productPrice\":114720,\"originalPrice\":115770,\"discount\":1050,\"price\":114720,\"productList\":[{\"productCode\":\"9900011121\",\"productName\":\"“苹”水相“鱼”套餐\",\"quantity\":1,\"originalSubtotal\":3600,\"subtotal\":3600},{\"productCode\":\"9900015568\",\"productName\":\"精选超值随心配\",\"quantity\":1,\"originalSubtotal\":1390,\"subtotal\":1390},{\"productCode\":\"9900011123\",\"productName\":\"“辣”么快乐套餐\",\"quantity\":1,\"originalSubtotal\":2400,\"subtotal\":2400},{\"productCode\":\"1700\",\"productName\":\"麦辣鸡翅2块\",\"quantity\":1,\"originalSubtotal\":1450,\"subtotal\":1450},{\"productCode\":\"9900000888\",\"productName\":\"巨无霸四件套\",\"quantity\":1,\"originalSubtotal\":5900,\"subtotal\":5900},{\"productCode\":\"9900000886\",\"productName\":\"不素之霸双层牛堡四件套\",\"quantity\":1,\"originalSubtotal\":5900,\"subtotal\":5900},{\"productCode\":\"9900000885\",\"productName\":\"培根蔬萃双层牛堡四件套\",\"quantity\":1,\"originalSubtotal\":5900,\"subtotal\":5900},{\"productCode\":\"4810\",\"productName\":\"中薯条\",\"quantity\":1,\"originalSubtotal\":1450,\"subtotal\":1450},{\"productCode\":\"510479\",\"productName\":\"冰燕麦奶铁中杯\",\"quantity\":1,\"originalSubtotal\":2300,\"subtotal\":2300},{\"productCode\":\"9900000882\",\"productName\":\"芝士安格斯厚牛堡四件套\",\"quantity\":1,\"originalSubtotal\":6650,\"subtotal\":6650},{\"productCode\":\"9900005411\",\"productName\":\"不素之霸双层牛堡三件套\",\"quantity\":1,\"originalSubtotal\":3750,\"subtotal\":3750},{\"productCode\":\"9900000881\",\"productName\":\"培根安格斯厚牛堡四件套\",\"quantity\":1,\"originalSubtotal\":6650,\"subtotal\":6650},{\"productCode\":\"9900004066\",\"productName\":\"堡堡随心拼（7件任选）\",\"quantity\":1,\"originalSubtotal\":7300,\"subtotal\":7300},{\"productCode\":\"521929\",\"productName\":\"旋旋水手帽\",\"quantity\":1,\"originalSubtotal\":4880,\"subtotal\":4880},{\"productCode\":\"9900004064\",\"productName\":\"精选单人餐三件套\",\"quantity\":1,\"originalSubtotal\":3500,\"subtotal\":3500},{\"productCode\":\"1440\",\"productName\":\"麦辣鸡腿汉堡\",\"quantity\":1,\"originalSubtotal\":2300,\"subtotal\":2300},{\"productCode\":\"515280\",\"productName\":\"阳光柠檬红茶小杯\",\"quantity\":1,\"originalSubtotal\":950,\"subtotal\":950},{\"productCode\":\"9900016058\",\"productName\":\"鱼排堡开心乐园餐\",\"quantity\":1,\"originalSubtotal\":2400,\"subtotal\":2400},{\"productCode\":\"9900016056\",\"productName\":\"麦乐鸡开心乐园餐\",\"quantity\":1,\"originalSubtotal\":2500,\"subtotal\":2500},{\"productCode\":\"9900016057\",\"productName\":\"汉堡开心乐园餐\",\"quantity\":1,\"originalSubtotal\":2350,\"subtotal\":2350},{\"productCode\":\"9900016055\",\"productName\":\"开心亲子双人餐\",\"quantity\":1,\"originalSubtotal\":5950,\"subtotal\":5950},{\"productCode\":\"9900009242\",\"productName\":\"“苹板”支撑Pro套餐\",\"quantity\":1,\"originalSubtotal\":3950,\"subtotal\":3950},{\"productCode\":\"507389\",\"productName\":\"浓缩咖啡\",\"quantity\":1,\"originalSubtotal\":1500,\"subtotal\":1500},{\"productCode\":\"9900009245\",\"productName\":\"牛气满满套餐\",\"quantity\":1,\"originalSubtotal\":3400,\"subtotal\":3400},{\"productCode\":\"507387\",\"productName\":\"卡布奇诺中杯\",\"quantity\":1,\"originalSubtotal\":2100,\"subtotal\":1050},{\"productCode\":\"9900000893\",\"productName\":\"双层深海鳕鱼堡四件套\",\"quantity\":1,\"originalSubtotal\":5900,\"subtotal\":5900},{\"productCode\":\"9900005321\",\"productName\":\"BFF四宫格小食盘双人餐\",\"quantity\":1,\"originalSubtotal\":12450,\"subtotal\":12450},{\"productCode\":\"9900000891\",\"productName\":\"麦辣鸡腿堡四件套\",\"quantity\":1,\"originalSubtotal\":5800,\"subtotal\":5800},{\"productCode\":\"515837\",\"productName\":\"圆筒冰淇淋\",\"quantity\":1,\"originalSubtotal\":500,\"subtotal\":500},{\"productCode\":\"6102\",\"productName\":\"苹果片一袋(60g)\",\"quantity\":1,\"originalSubtotal\":700,\"subtotal\":700}],\"takeWayList\":[{\"code\":\"eat-in\",\"title\":\"堂食\",\"subtitle\":\"店内用餐\"},{\"code\":\"take-in-store\",\"title\":\"外带\",\"subtitle\":\"店内自提\"}]}}",
+          "type": "text"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "success": true,
+        "code": 200,
+        "message": "请求成功",
+        "datetime": "2026-10-21 18:41:10",
+        "traceId": "1b3ec414856280b70e6fce21938593d6",
+        "data": {
+          "productOriginalPrice": 115770,
+          "productPrice": 114720,
+          "originalPrice": 115770,
+          "discount": 1050,
+          "price": 114720,
+          "productList": [
+            {
+              "productCode": "9900011121",
+              "productName": "“苹”水相“鱼”套餐",
+              "quantity": 1,
+              "originalSubtotal": 3600,
+              "subtotal": 3600
+            },
+            {
+              "productCode": "9900015568",
+              "productName": "精选超值随心配",
+              "quantity": 1,
+              "originalSubtotal": 1390,
+              "subtotal": 1390
+            },
+            {
+              "productCode": "9900011123",
+              "productName": "“辣”么快乐套餐",
+              "quantity": 1,
+              "originalSubtotal": 2400,
+              "subtotal": 2400
+            },
+            {
+              "productCode": "1700",
+              "productName": "麦辣鸡翅2块",
+              "quantity": 1,
+              "originalSubtotal": 1450,
+              "subtotal": 1450
+            },
+            {
+              "productCode": "9900000888",
+              "productName": "巨无霸四件套",
+              "quantity": 1,
+              "originalSubtotal": 5900,
+              "subtotal": 5900
+            },
+            {
+              "productCode": "9900000886",
+              "productName": "不素之霸双层牛堡四件套",
+              "quantity": 1,
+              "originalSubtotal": 5900,
+              "subtotal": 5900
+            },
+            {
+              "productCode": "9900000885",
+              "productName": "培根蔬萃双层牛堡四件套",
+              "quantity": 1,
+              "originalSubtotal": 5900,
+              "subtotal": 5900
+            },
+            {
+              "productCode": "4810",
+              "productName": "中薯条",
+              "quantity": 1,
+              "originalSubtotal": 1450,
+              "subtotal": 1450
+            },
+            {
+              "productCode": "510479",
+              "productName": "冰燕麦奶铁中杯",
+              "quantity": 1,
+              "originalSubtotal": 2300,
+              "subtotal": 2300
+            },
+            {
+              "productCode": "9900000882",
+              "productName": "芝士安格斯厚牛堡四件套",
+              "quantity": 1,
+              "originalSubtotal": 6650,
+              "subtotal": 6650
+            },
+            {
+              "productCode": "9900005411",
+              "productName": "不素之霸双层牛堡三件套",
+              "quantity": 1,
+              "originalSubtotal": 3750,
+              "subtotal": 3750
+            },
+            {
+              "productCode": "9900000881",
+              "productName": "培根安格斯厚牛堡四件套",
+              "quantity": 1,
+              "originalSubtotal": 6650,
+              "subtotal": 6650
+            },
+            {
+              "productCode": "9900004066",
+              "productName": "堡堡随心拼（7件任选）",
+              "quantity": 1,
+              "originalSubtotal": 7300,
+              "subtotal": 7300
+            },
+            {
+              "productCode": "521929",
+              "productName": "旋旋水手帽",
+              "quantity": 1,
+              "originalSubtotal": 4880,
+              "subtotal": 4880
+            },
+            {
+              "productCode": "9900004064",
+              "productName": "精选单人餐三件套",
+              "quantity": 1,
+              "originalSubtotal": 3500,
+              "subtotal": 3500
+            },
+            {
+              "productCode": "1440",
+              "productName": "麦辣鸡腿汉堡",
+              "quantity": 1,
+              "originalSubtotal": 2300,
+              "subtotal": 2300
+            },
+            {
+              "productCode": "515280",
+              "productName": "阳光柠檬红茶小杯",
+              "quantity": 1,
+              "originalSubtotal": 950,
+              "subtotal": 950
+            },
+            {
+              "productCode": "9900016058",
+              "productName": "鱼排堡开心乐园餐",
+              "quantity": 1,
+              "originalSubtotal": 2400,
+              "subtotal": 2400
+            },
+            {
+              "productCode": "9900016056",
+              "productName": "麦乐鸡开心乐园餐",
+              "quantity": 1,
+              "originalSubtotal": 2500,
+              "subtotal": 2500
+            },
+            {
+              "productCode": "9900016057",
+              "productName": "汉堡开心乐园餐",
+              "quantity": 1,
+              "originalSubtotal": 2350,
+              "subtotal": 2350
+            },
+            {
+              "productCode": "9900016055",
+              "productName": "开心亲子双人餐",
+              "quantity": 1,
+              "originalSubtotal": 5950,
+              "subtotal": 5950
+            },
+            {
+              "productCode": "9900009242",
+              "productName": "“苹板”支撑Pro套餐",
+              "quantity": 1,
+              "originalSubtotal": 3950,
+              "subtotal": 3950
+            },
+            {
+              "productCode": "507389",
+              "productName": "浓缩咖啡",
+              "quantity": 1,
+              "originalSubtotal": 1500,
+              "subtotal": 1500
+            },
+            {
+              "productCode": "9900009245",
+              "productName": "牛气满满套餐",
+              "quantity": 1,
+              "originalSubtotal": 3400,
+              "subtotal": 3400
+            },
+            {
+              "productCode": "507387",
+              "productName": "卡布奇诺中杯",
+              "quantity": 1,
+              "originalSubtotal": 2100,
+              "subtotal": 1050
+            },
+            {
+              "productCode": "9900000893",
+              "productName": "双层深海鳕鱼堡四件套",
+              "quantity": 1,
+              "originalSubtotal": 5900,
+              "subtotal": 5900
+            },
+            {
+              "productCode": "9900005321",
+              "productName": "BFF四宫格小食盘双人餐",
+              "quantity": 1,
+              "originalSubtotal": 12450,
+              "subtotal": 12450
+            },
+            {
+              "productCode": "9900000891",
+              "productName": "麦辣鸡腿堡四件套",
+              "quantity": 1,
+              "originalSubtotal": 5800,
+              "subtotal": 5800
+            },
+            {
+              "productCode": "515837",
+              "productName": "圆筒冰淇淋",
+              "quantity": 1,
+              "originalSubtotal": 500,
+              "subtotal": 500
+            },
+            {
+              "productCode": "6102",
+              "productName": "苹果片一袋(60g)",
+              "quantity": 1,
+              "originalSubtotal": 700,
+              "subtotal": 700
+            }
+          ],
+          "takeWayList": [
+            {
+              "code": "eat-in",
+              "title": "堂食",
+              "subtitle": "店内用餐"
+            },
+            {
+              "code": "take-in-store",
+              "title": "外带",
+              "subtitle": "店内自提"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "jsonrpc": "2.0",
+    "id": 6,
+    "result": {
+      "content": [
+        {
+          "text": "# API Response Information\n\nBelow is the response from an API call. To help you understand the data, I've provided:\n\n1. A detailed description of all fields in the response structure\n2. The complete API response\n\n## Response Structure\n\n> Content-Type: application/json\n\n- **data**: No comments found. (Type: object)\n  - **data.productOriginalPrice**: 商品原价 单位分 (Type: integer)\n  - **data.productPrice**: 商品现价 单位分 (Type: integer)\n  - **data.deliveryOriginalPrice**: 运费原价 单位分 (Type: integer)\n  - **data.deliveryPrice**: 运费现价 单位分 (Type: integer)\n  - **data.packingOriginalPrice**: 打包费原价 单位分 (Type: integer)\n  - **data.packingPrice**: 打包费现价 单位分 (Type: integer)\n  - **data.tablewarePrice**: 餐具费现价 单位分 (Type: integer)\n  - **data.originalPrice**: 原价 单位分 (Type: integer)\n  - **data.discount**: 优惠金额 单位分 (Type: integer)\n  - **data.price**: 现价 单位分 (Type: integer)\n  - **data.productList**: 商品列表 (Type: array)\n    - **data.productList[].productCode**: 商品编码 (Type: string)\n    - **data.productList[].productName**: 商品名称 (Type: string)\n    - **data.productList[].quantity**: 数量 (Type: integer)\n    - **data.productList[].originalSubtotal**: 商品原小计 单位分 (Type: integer)\n    - **data.productList[].subtotal**: 商品小计 单位分 (Type: integer)\n  - **data.takeWayList**: 可选的取餐方式选项列表 (Type: array)\n    - **data.takeWayList[].code**: 取餐方式code，到店下单时需要携带 (Type: string)\n    - **data.takeWayList[].title**: 取餐方式标题 (Type: string)\n    - **data.takeWayList[].subtitle**: 取餐方式副标题 (Type: string)\n  - **data.mealAssistanceList**: 可选的助餐服务列表 (Type: array)\n    - **data.mealAssistanceList[].code**: 助餐服务编码 (Type: string)\n    - **data.mealAssistanceList[].name**: 助餐服务名称 (Type: string)\n  - **data.enjoyed**: 已享受的优惠 (Type: object)\n    - **data.enjoyed.amountType**: 1 特价 2 折扣 3 立减 (Type: string)\n    - **data.enjoyed.realDiscount**: 实际优惠值  特价(ex:18)  折扣（ex:7.5） 立减(ex:5)  金额单位是元 与discount区别计算了tender (Type: number)\n    - **data.enjoyed.balance**: 门槛差额(可享受的优惠时才有值)，单位分 (Type: integer)\n  - **data.enjoyable**: 可享受的优惠 (Type: object)\n    - **data.enjoyable.amountType**: 1 特价 2 折扣 3 立减 (Type: string)\n    - **data.enjoyable.realDiscount**: 实际优惠值  特价(ex:18)  折扣（ex:7.5） 立减(ex:5)  金额单位是元 与discount区别计算了tender (Type: number)\n    - **data.enjoyable.balance**: 门槛差额(可享受的优惠时才有值)，单位分 (Type: integer)\n- **message**: No comments found. (Type: string)\n- **traceId**: No comments found. (Type: string)\n\n## Original Response\n\n{\"success\":true,\"code\":200,\"message\":\"请求成功\",\"datetime\":\"2026-10-21 18:41:11\",\"traceId\":\"5b22cea8634e1c7feebcb1820afecd64\",\"data\":{\"productOriginalPrice\":25350,\"productPrice\":23220,\"originalPrice\":25350,\"discount\":2130,\"price\":23220,\"productList\":[{\"productCode\":\"9900005428\",\"productName\":\"培根安格斯厚牛堡三件套\",\"quantity\":1,\"originalSubtotal\":4550,\"subtotal\":4550},{\"productCode\":\"1450\",\"productName\":\"麦香鸡\",\"quantity\":1,\"originalSubtotal\":1700,\"subtotal\":1700},{\"productCode\":\"520445\",\"productName\":\"薄皮焦香V翅\",\"quantity\":1,\"originalSubtotal\":1550,\"subtotal\":1550},{\"productCode\":\"520689\",\"productName\":\"小杯鲜萃咖啡\",\"quantity\":1,\"originalSubtotal\":1000,\"subtotal\":1000},{\"productCode\":\"507409\",\"productName\":\"麦咖啡™冰奶铁中杯\",\"quantity\":1,\"originalSubtotal\":2100,\"subtotal\":1390},{\"productCode\":\"3505\",\"productName\":\"锡兰红茶\",\"quantity\":1,\"originalSubtotal\":1150,\"subtotal\":1150},{\"productCode\":\"1600\",\"productName\":\"麦香鱼\",\"quantity\":1,\"originalSubtotal\":2250,\"subtotal\":2250},{\"productCode\":\"507411\",\"productName\":\"麦咖啡™冰美式中杯\",\"quantity\":1,\"originalSubtotal\":1900,\"subtotal\":1190},{\"productCode\":\"9900005430\",\"productName\":\"芝士安格斯厚牛堡三件套\",\"quantity\":1,\"originalSubtotal\":4250,\"subtotal\":4250},{\"productCode\":\"4437\",\"productName\":\"小杯玉米杯\",\"quantity\":1,\"originalSubtotal\":1300,\"subtotal\":1300},{\"productCode\":\"9900005432\",\"productName\":\"麦麦脆汁鸡1块(鸡腿或带骨里脊)\",\"quantity\":1,\"originalSubtotal\":1500,\"subtotal\":1500},{\"productCode\":\"515946\",\"productName\":\"冰浓浓黑巧中杯\",\"quantity\":1,\"originalSubtotal\":2100,\"subtotal\":1390}],\"takeWayList\":[{\"code\":\"eat-in\",\"title\":\"堂食\",\"subtitle\":\"店内用餐\"},{\"code\":\"take-in-store\",\"title\":\"外带\",\"subtitle\":\"店内自提\"}]}}",
+          "type": "text"
+        }
+      ],
+      "isError": false,
+      "structuredContent": {
+        "success": true,
+        "code": 200,
+        "message": "请求成功",
+        "datetime": "2026-10-21 18:41:11",
+        "traceId": "5b22cea8634e1c7feebcb1820afecd64",
+        "data": {
+          "productOriginalPrice": 25350,
+          "productPrice": 23220,
+          "originalPrice": 25350,
+          "discount": 2130,
+          "price": 23220,
+          "productList": [
+            {
+              "productCode": "9900005428",
+              "productName": "培根安格斯厚牛堡三件套",
+              "quantity": 1,
+              "originalSubtotal": 4550,
+              "subtotal": 4550
+            },
+            {
+              "productCode": "1450",
+              "productName": "麦香鸡",
+              "quantity": 1,
+              "originalSubtotal": 1700,
+              "subtotal": 1700
+            },
+            {
+              "productCode": "520445",
+              "productName": "薄皮焦香V翅",
+              "quantity": 1,
+              "originalSubtotal": 1550,
+              "subtotal": 1550
+            },
+            {
+              "productCode": "520689",
+              "productName": "小杯鲜萃咖啡",
+              "quantity": 1,
+              "originalSubtotal": 1000,
+              "subtotal": 1000
+            },
+            {
+              "productCode": "507409",
+              "productName": "麦咖啡™冰奶铁中杯",
+              "quantity": 1,
+              "originalSubtotal": 2100,
+              "subtotal": 1390
+            },
+            {
+              "productCode": "3505",
+              "productName": "锡兰红茶",
+              "quantity": 1,
+              "originalSubtotal": 1150,
+              "subtotal": 1150
+            },
+            {
+              "productCode": "1600",
+              "productName": "麦香鱼",
+              "quantity": 1,
+              "originalSubtotal": 2250,
+              "subtotal": 2250
+            },
+            {
+              "productCode": "507411",
+              "productName": "麦咖啡™冰美式中杯",
+              "quantity": 1,
+              "originalSubtotal": 1900,
+              "subtotal": 1190
+            },
+            {
+              "productCode": "9900005430",
+              "productName": "芝士安格斯厚牛堡三件套",
+              "quantity": 1,
+              "originalSubtotal": 4250,
+              "subtotal": 4250
+            },
+            {
+              "productCode": "4437",
+              "productName": "小杯玉米杯",
+              "quantity": 1,
+              "originalSubtotal": 1300,
+              "subtotal": 1300
+            },
+            {
+              "productCode": "9900005432",
+              "productName": "麦麦脆汁鸡1块(鸡腿或带骨里脊)",
+              "quantity": 1,
+              "originalSubtotal": 1500,
+              "subtotal": 1500
+            },
+            {
+              "productCode": "515946",
+              "productName": "冰浓浓黑巧中杯",
+              "quantity": 1,
+              "originalSubtotal": 2100,
+              "subtotal": 1390
+            }
+          ],
+          "takeWayList": [
+            {
+              "code": "eat-in",
+              "title": "堂食",
+              "subtitle": "店内用餐"
+            },
+            {
+              "code": "take-in-store",
+              "title": "外带",
+              "subtitle": "店内自提"
+            }
+          ]
+        }
+      }
+    }
+  }
+]

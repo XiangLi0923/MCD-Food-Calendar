@@ -1,0 +1,43 @@
+{
+  "jsonrpc": "2.0",
+  "id": 4,
+  "result": {
+    "content": [
+      {
+        "text": "每个门店的基本信息按单行展示：\n- **门店名称**: data[].storeName\n- **门店地址**: data[].address\n- **到店距离**: data[].distance\n- **门店编号**: data[].storeCode, 唯一编号，工具入参\n- **业务编码**: data[].beCode, 不为空时，唯一编号，工具入参\n- **支持预约**: data[].reservation，是否支持预约，true:支持，false:不支持\n当 reservation=true 时，⚠️ reservationTimeOptions 中的每一条数据都直接影响用户选择，缺少任何一条都会导致用户无法预约，严禁省略\ntoday=true 的日期标记星号(*)\n{\"success\":true,\"code\":200,\"message\":\"请求成功\",\"datetime\":\"2026-10-19 13:20:40\",\"traceId\":\"eb94529f71be59cd927880d91fdaec64\",\"data\":[{\"storeCode\":\"3350336\",\"storeName\":\"麦当劳烟台招远温泉路餐厅\",\"address\":\"罗峰路与温泉路交叉口\",\"distance\":0,\"longitude\":0.0,\"latitude\":0.0,\"reservation\":true,\"reservationTimeOptions\":[{\"date\":\"2026-10-19\",\"today\":true,\"reservationOptionText\":\"午餐(10:44至14:15)，下午茶(14:44至16:45)，夜市(17:14至21:45)，宵夜(22:14至23:59)\"},{\"date\":\"2026-10-20\",\"today\":false,\"reservationOptionText\":\"宵夜(00:00至04:45,22:14至23:59)，早餐(05:14至10:15)，午餐(10:44至14:15)，下午茶(14:44至16:45)，夜市(17:14至21:45)\"}]}]}## 展示结果时，每个门店的 storeCode 和 beCode 必须完整展示，\n",
+        "type": "text"
+      }
+    ],
+    "isError": false,
+    "structuredContent": {
+      "success": true,
+      "code": 200,
+      "message": "请求成功",
+      "datetime": "2026-10-19 13:20:40",
+      "traceId": "eb94529f71be59cd927880d91fdaec64",
+      "data": [
+        {
+          "storeCode": "3350336",
+          "storeName": "麦当劳烟台招远温泉路餐厅",
+          "address": "罗峰路与温泉路交叉口",
+          "distance": 0,
+          "longitude": 0.0,
+          "latitude": 0.0,
+          "reservation": true,
+          "reservationTimeOptions": [
+            {
+              "date": "2026-10-19",
+              "today": true,
+              "reservationOptionText": "午餐(10:44至14:15)，下午茶(14:44至16:45)，夜市(17:14至21:45)，宵夜(22:14至23:59)"
+            },
+            {
+              "date": "2026-10-20",
+              "today": false,
+              "reservationOptionText": "宵夜(00:00至04:45,22:14至23:59)，早餐(05:14至10:15)，午餐(10:44至14:15)，下午茶(14:44至16:45)，夜市(17:14至21:45)"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

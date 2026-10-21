@@ -1,0 +1,27 @@
+# ===== 凭证与本机配置（绝不提交）=====
+# 对话记录.txt 内含明文 MCP Token，永久排除
+对话记录.txt
+.env
+.env.*
+*.token
+token.txt
+.workbuddy/
+
+# ===== 内部文档（不随作品发布）=====
+M_CODE_PROJECT_HANDOFF.md
+legacy-memory/
+
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# ===== 运行时缓存（data/snapshot/ 要提交，data/cache/ 只留本地）=====
+data/cache/
+
+# ===== 系统 / 编辑器 =====
+.DS_Store
+Thumbs.db
+*.log
