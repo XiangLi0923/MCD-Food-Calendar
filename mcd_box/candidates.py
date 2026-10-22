@@ -25,6 +25,10 @@ NON_FOOD_WORDS = ("帽", "丝巾", "徽章", "玩具", "公仔", "周边", "盲�
                   "钥匙扣", "帆布袋", "手提袋", "立牌", "贴纸", "星愿贴", "水手帽",
                   "按摩", "捶", "痒痒挠", "水壶", "雨伞", "T恤", "玩偶", "手办", "挂件", "收纳")
 
+# 「能当一顿饭」的判定：只看分类与名称，不猜份量。甜品/饮品/小食不算主食。
+MAIN_CATEGORY_WORDS = ("堡", "套餐", "卷", "炸鸡", "单人餐", "随心配", "大堡口福", "牛鱼肉堡", "安格斯")
+MAIN_NAME_WORDS = ("堡", "卷", "饭", "鸡腿", "鸡排")
+
 SIZE_LIGHT_MAX = 18.0
 SIZE_BIG_MIN = 35.0
 
@@ -44,6 +48,7 @@ class Candidate:
     is_pop: bool            # 带 人气/热卖/爆款/经典
     is_multi: bool          # 名称看着像多人餐
     is_nonfood: bool        # 周边/玩具/徽章，不是餐品
+    is_main: bool           # 能当一顿饭（汉堡/套餐/卷/炸鸡），甜品饮品为 False
 
     @property
     def has_price(self) -> bool:
@@ -56,6 +61,7 @@ class Candidate:
             "热" if self.is_pop else "",
             "多" if self.is_multi else "",
             "物" if self.is_nonfood else "",
+            "" if self.is_main else "·非主食",
         ])
         return f"{self.name}（{p}·{self.size_band}{'·' + flags if flags else ''}）"
 
@@ -90,6 +96,8 @@ def to_candidate(item: Item) -> Candidate:
         is_pop=_hit(POP_WORDS, item.name, *item.tags),
         is_multi=_hit(MULTI_WORDS, item.name, item.category),
         is_nonfood=_hit(NON_FOOD_WORDS, item.name),
+        is_main=(_hit(MAIN_CATEGORY_WORDS, item.category) or _hit(MAIN_NAME_WORDS, item.name))
+                and not _hit(NON_FOOD_WORDS, item.name),
     )
 
 
@@ -118,6 +126,7 @@ def build(catalog: Catalog, drop_multi: bool = True,
         "light": sum(1 for c in pool if c.size_band == "light"),
         "normal": sum(1 for c in pool if c.size_band == "normal"),
         "big": sum(1 for c in pool if c.size_band == "big"),
+        "main": sum(1 for c in pool if c.is_main),
         "categories": len({c.category for c in pool}),
     }
     return pool, stats
