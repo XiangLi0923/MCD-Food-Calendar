@@ -16,6 +16,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from mcd_box.adapter import Adapter  # noqa: E402
 from mcd_box.candidates import build  # noqa: E402
+from mcd_box.enrich import enrich  # noqa: E402
 from mcd_box.entry import EXCLUDE_DICT, parse_text  # noqa: E402
 from mcd_box.recommend import STATE_RULES, Query, open_box  # noqa: E402
 
@@ -24,9 +25,10 @@ FEELS = ["满足", "热乎", "清爽", "甜一点", "想尝鲜"]
 
 
 def setUpModule():
-    global POOL
-    cat = Adapter(mode="offline").get_catalog()
-    POOL, _ = build(cat)
+    global POOL, CAT, ADAPTER
+    ADAPTER = Adapter(mode="offline")
+    CAT = ADAPTER.get_catalog()
+    POOL, _ = build(CAT)
 
 
 class TestHardConstraints(unittest.TestCase):
@@ -164,6 +166,49 @@ class TestTextParsing(unittest.TestCase):
         p = parse_text("嗯")
         self.assertEqual(p.hit_count, 0)
         self.assertTrue(p.unresolved)
+
+
+class TestMealsAndNutrition(unittest.TestCase):
+    """组合成一顿饭 / 明细热量（新增能力，别退化）。"""
+
+    def _plans(self, **kw):
+        q = Query(entry="intuition", seed=13, **kw)
+        box = open_box(POOL, q, rng=random.Random(13))
+        return enrich(box, ADAPTER, CAT).plans
+
+    def test_combo_price_equals_parts_sum(self):
+        for p in self._plans(state="累了", size="很饿"):
+            if p.cand.parts:
+                total = round(sum(pr for _, pr in p.cand.parts), 2)
+                self.assertAlmostEqual(p.cand.price_yuan, total, places=2,
+                                       msg=f"{p.cand.name} 合计价与明细不相加")
+
+    def test_combo_within_budget(self):
+        for p in self._plans(state="累了", size="很饿", budget_yuan=40):
+            self.assertLessEqual(p.cand.price_yuan, 40 + 0.01)
+
+    def test_hungry_gets_multi_item_or_set(self):
+        plans = self._plans(state="累了", size="很饿")
+        rich = [p for p in plans if len(p.cand.parts) >= 2 or len(p.meta.get("parts", [])) >= 2]
+        self.assertGreaterEqual(len(rich), 1, "饿坏了却只给了单品")
+
+    def test_nutrition_complete_is_consistent(self):
+        for p in self._plans(state="累了", size="正常"):
+            nut = p.meta.get("nutrition") or {}
+            parts = p.meta.get("parts") or []
+            if nut.get("complete"):
+                self.assertEqual(nut.get("matched"), nut.get("total"))
+                self.assertIsNotNone(nut.get("kcal"))
+                known = [i["kcal"] for i in parts if i.get("kcal") is not None]
+                self.assertEqual(nut.get("kcal"), sum(known), "完整时热量合计应等于各项之和")
+            else:
+                # 不完整时前端不展示合计，这里只要求"不完整"时 matched < total
+                self.assertLess(nut.get("matched", 0), max(nut.get("total", 1), 1))
+
+    def test_every_plan_has_parts_or_known_false(self):
+        for p in self._plans(state="随便", size="正常"):
+            self.assertTrue(p.meta.get("parts_known") or p.meta.get("parts") == [],
+                            "套餐子项状态不明")
 
 
 if __name__ == "__main__":

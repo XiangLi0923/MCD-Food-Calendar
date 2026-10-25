@@ -1,21 +1,22 @@
 # 项目状态（单一事实源）
 
-> 最后更新：2026-10-22 11:50 · 报名截止 2026-10-25 23:59
+> 最后更新：2026-10-25 18:00 · 报名截止 2026-10-25 23:59
 
 ## 一句话
 
-选餐魔盒的**完整链路已跑通**（三入口 → 硬过滤 → 三规则 → 三张卡 → 离线演示 → 测试全绿），
-剩余工作是交付材料与报名，不是功能。
+选餐魔盒已从"CLI 能跑"长成"**网页可用**"：像素风单页、左右两栏、组合成一顿饭、每盒展开明细与热量、
+结果页可继续用一句话调整。报名 Issue #1382 已提交。
 
 ## 已完成
 
 | 类别 | 内容 |
 |---|---|
 | 文档 | `README.md`（V2）、`MCP_INTEGRATION.md`、`CONTEST_DECLARATION.md`（官方原文）、`mcp-config.example.json`、`skill/SKILL.md`、`docs/PRD_V2.md`、`docs/PRD_CHANGELOG.md`、`docs/MVP_IMPLEMENTATION_PLAN.md`、`docs/CHAIN_REPORT.md` |
-| 代码 | `mcd_box/`：mcp_client / adapter / candidates / recommend / entry / render / cli |
+| 代码 | `mcd_box/`：mcp_client / adapter / candidates / **meals** / recommend / entry / **nutrition** / **enrich** / render / cli |
+| 网页 | `server.py`（标准库 http.server + CORS + 多端口回退）、`web/index.html`（像素风单页）、`start_web.cmd` |
 | 脚本 | `verify_chain.py`（链路验证）、`build_snapshot.py`（快照）、`smoke_candidates.py`（候选体检）、`probe_*.py`（早期探针，保留失败记录） |
-| 数据 | `data/snapshot/3350112.json`（106 条，2026-10-22 抓取，含价格） |
-| 测试 | `tests/test_rules.py` 14 项，全绿 |
+| 数据 | `data/snapshot/3350325.json`（112 条菜单）、`details_3350325.json`（43 个套餐子项）、`nutrition.json`（160 条营养） |
+| 测试 | `tests/test_rules.py` 19 项，全绿（含组合价相加、热量完整性） |
 | 仓库 | https://github.com/XiangLi0923/MCD-Food-Calendar （public，main） |
 
 ## 已验证的数据事实（门店 3350112）
@@ -39,6 +40,7 @@
 | 1 | 报名 Issue 必须由本人提交 | 待用户操作 |
 | 2 | `workbuddy.md` 需导出完整对话（含失败记录） | 待用户操作 |
 | 3 | 榜单按 Star 排名，当前 0 star | 需要有传播物料（截图/一句话） |
+| 6 | 公网链接未部署 | 若要公开，只能用快照模式（不能带个人 Token） |
 | 4 | GitHub MCP 连接器不可用 | 不影响开发，git CLI 正常 |
 | 5 | 菜单每天变动（106 vs 昨天 102） | 已用缓存 + 快照兜底 |
 
