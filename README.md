@@ -135,6 +135,15 @@ python -m mcd_box.cli --state 累了 --feel 满足 --budget 30
 
 零第三方依赖（只用 Python 标准库），Python 3.10+ 即可。
 
+### 网页版（同样零依赖）
+
+```bash
+python server.py                # 打开 http://127.0.0.1:8000（在线：真实 MCP，缓存 10 分钟）
+python server.py --offline      # 无 Token / 无网络时用快照演示
+```
+
+点几下标签就能开盒，也支持说一句话先解析回显、再确认开盒。
+
 ### 离线演示（不需要 Token、不需要网络）
 
 ```bash
@@ -178,7 +187,7 @@ python -m mcd_box.cli --random --offline
 | WorkBuddy Skill 工作流（`skill/SKILL.md`） | ✅ 已提供（调用约定，不是独立进程） |
 | 营养参考展示 | ⬜ 未实现（数据不全，宁缺不编） |
 | 单品换餐 / 帮我带文本 / 偏好记忆 / 多档随机 | ⬜ 未实现（P1） |
-| Web 界面 | ⬜ 不做（交互走命令行与 WorkBuddy 对话） |
+| Web 界面（本地网页，`server.py` + `web/index.html`） | ✅ 已实现（零依赖，标准库 http.server） |
 | 一周菜单 | ⬜ 赛后（P2） |
 
 ## 九、项目结构

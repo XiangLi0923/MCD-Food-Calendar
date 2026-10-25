@@ -97,6 +97,22 @@ python -m mcd_box.cli --state 累了 --seed 1730000000000             # 复现�
 
 在线与离线的区别只在数据源：在线实时拉取（缓存 10 分钟），卡片标注「数据：实时 / 10 分钟内的缓存」。
 
+### 3.1 网页端（推荐演示方式）
+
+```bash
+python server.py                # 浏览器打开 http://127.0.0.1:8000
+python server.py --offline      # 无 Token / 无网时用快照演示
+python server.py --port 8080    # 换端口
+```
+
+网页端与 CLI 共享同一套 `mcd_box`：点标签 / 说一句话（先回显确认）/ 一键随机，三种入口都在一个页面里；
+结果三张卡带价格、理由、命中标签、数据来源与时间，还有「再来一盒」。
+
+**API（供联调/二次开发）**：
+- `GET /api/parse?text=…` → 文本解析回显（JSON）
+- `GET /api/box?state=…&feel=…&size=…&budget=…&exclude=…&text=…&random=1&seed=…` → 开盒结果（JSON）
+- 服务用 `--offline` 启动时，所有请求只读快照；否则可用 `&offline=1` 单独指定
+
 ## 4. 在线演示的前置条件
 
 1. **领取 Token（免费）**：打开 `https://open.mcd.cn/mcp`，手机号登录，在控制台激活领取。
