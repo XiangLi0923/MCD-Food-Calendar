@@ -159,7 +159,18 @@
   .price{font-size:26px; font-weight:900; letter-spacing:1px;}
   .name{font-size:16px; font-weight:800; margin-top:8px;}
   .parts{margin-top:8px; border-left:4px solid var(--yellow); padding-left:10px;}
-  .parts div{font-size:13px; color:var(--ink2); display:flex; justify-content:space-between; gap:12px;}
+  .prow{display:grid; grid-template-columns:1fr auto auto; gap:10px; align-items:baseline;
+        font-size:12.5px; color:var(--ink2); padding:3px 0; border-bottom:1px dashed #e6d9c2;}
+  .prow:last-child{border-bottom:none;}
+  .prow .pn{color:var(--ink);}
+  .prow .pk{min-width:62px; text-align:right; color:#8a7358;}
+  .nutline{margin-top:8px; font-size:13px; background:#FFF3D6; border:2px solid var(--line); padding:4px 8px; display:inline-block;}
+  .nutline b{color:var(--red);}
+  .saveline{margin-top:6px; font-size:12.5px; color:#7a5c33;}
+  .imgrow{display:flex; justify-content:flex-end; margin-top:10px;}
+  .piximg{width:92px; height:92px; object-fit:contain; padding:6px; background:#fff;
+          border:4px solid var(--line); box-shadow:4px 4px 0 var(--shadow);
+          image-rendering:pixelated; filter:saturate(1.1) contrast(1.05);}
   .cat{font-size:12px; color:var(--ink2); margin-top:6px;}
   .why{margin-top:8px; font-size:14px;}
   .tags{margin-top:8px; display:flex; flex-wrap:wrap; gap:6px;}
@@ -463,7 +474,20 @@ function render(d){
   res.innerHTML = d.plans.map((p, i)=>{
     const cls = ROLE_CLS[p.role] || "";
     const price = p.price_yuan != null ? `¥${p.price_yuan.toFixed(2)}` : "价格待确认";
-    const parts = (p.parts||[]).map(x=>`<div><span>${x.name}</span><span>¥${x.price_yuan.toFixed(2)}</span></div>`).join("");
+    const parts = (p.parts||[]).map(x=>{
+      const pr = x.price_yuan != null ? `¥${x.price_yuan.toFixed(2)}`
+               : (x.single_price_yuan != null ? `单点 ¥${x.single_price_yuan.toFixed(2)}` : "并入套餐");
+      const kc = x.kcal != null ? `${x.kcal} kcal` : "热量未知";
+      return `<div class="prow"><span class="pn">${x.name}</span><span class="pp">${pr}</span><span class="pk">${kc}</span></div>`;
+    }).join("");
+    const nut = p.nutrition || {};
+    let nutLine = "";
+    if(nut.kcal != null && nut.complete) nutLine = `热量合计 <b>约 ${nut.kcal} kcal</b> · 蛋白 ${nut.protein_g}g`;
+    else if(nut.matched) nutLine = `热量：已查到 ${nut.matched}/${nut.total} 项，合计约 ${nut.kcal} kcal（其余未知）`;
+    else nutLine = "热量：暂无（子项匹配不到营养表）";
+    const pm = p.price || {};
+    const saveLine = pm.was ? `原价 ¥${pm.was.toFixed(2)} · 省 ¥${pm.save.toFixed(2)}` : "";
+    const img = p.image ? `<div class="imgrow"><img class="piximg" src="${p.image}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentNode.style.display='none'"></div>` : "";
     const tags = (p.matched||[]).map(t=>`<span class="tag">${t}</span>`).join("");
     const warns = (p.warnings||[]).map(w=>`<div class="warn">⚠ ${w}</div>`).join("");
     return `<div class="card ${cls}">
@@ -472,10 +496,13 @@ function render(d){
         <div class="top"><span class="role">${p.label}</span><span class="price">${price}</span></div>
         <div class="name">${p.name}</div>
         ${parts ? `<div class="parts">${parts}</div>` : ""}
+        <div><span class="nutline">${nutLine}</span></div>
+        ${saveLine ? `<div class="saveline">${saveLine}</div>` : ""}
         <div class="cat">${p.category}</div>
         <div class="why">${p.reason}</div>
         ${tags ? `<div class="tags">${tags}</div>` : ""}
         ${warns}
+        ${img}
       </div>
     </div>`;
   }).join("") + `

@@ -18,6 +18,7 @@ import sys
 
 from .adapter import DEFAULT_STORE, Adapter
 from .candidates import build
+from .enrich import enrich
 from .entry import describe_inputs, intuition_query, parse_text, random_query, validate
 from .recommend import open_box
 from .render import render_box, render_json
@@ -85,8 +86,9 @@ def main(argv: list[str] | None = None) -> int:
             print(f"输入有问题：{x}", file=sys.stderr)
         return 2
 
+    ad = Adapter(store=args.store, mode="offline" if args.offline else "auto")
     try:
-        cat = Adapter(store=args.store, mode="offline" if args.offline else "auto").get_catalog()
+        cat = ad.get_catalog()
     except Exception as e:  # 取数失败不静默
         print(f"取数失败：{e}", file=sys.stderr)
         print("可以加 --offline 用本地快照先看效果。", file=sys.stderr)
@@ -95,6 +97,7 @@ def main(argv: list[str] | None = None) -> int:
     pool, _stats = build(cat)
     q.seed = args.seed if args.seed is not None else random.SystemRandom().randrange(10 ** 12)
     box = open_box(pool, q, rng=random.Random(q.seed))
+    box = enrich(box, ad, cat)
 
     if args.json:
         print(json.dumps(render_json(box, q, cat), ensure_ascii=False, indent=2))

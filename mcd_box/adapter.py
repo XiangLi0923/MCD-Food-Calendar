@@ -240,6 +240,62 @@ class Adapter:
         self._write_cache(cat)
         return cat
 
+    # -- 套餐子项（只在需要展示"这盒里有什么"时按需调用）
+    def get_detail_items(self, codes: list[str]) -> dict[str, list[str]]:
+        """返回 {code: [子项名...]}。带缓存；离线模式只读缓存。"""
+        snap = os.path.join(SNAPSHOT_DIR, f"details_{self.store}.json")
+        path = os.path.join(CACHE_DIR, f"details_{self.store}.json")
+        cache: dict[str, list[str]] = {}
+        if os.path.exists(snap):
+            try:
+                with open(snap, encoding="utf-8") as f:
+                    cache.update(json.load(f).get("items", {}))
+            except (OSError, json.JSONDecodeError):
+                pass
+        if os.path.exists(path):
+            try:
+                with open(path, encoding="utf-8") as f:
+                    cache = json.load(f)
+            except (OSError, json.JSONDecodeError):
+                cache = {}
+
+        todo = [c for c in codes if c not in cache]
+        if todo and self.mode != "offline":
+            try:
+                token = load_token()
+                if token:
+                    client = McpClient(load_url(), token)
+                    client.initialize()
+                    for code in todo:
+                        d = client.call_tool("query-meal-detail", {
+                            "storeCode": self.store, "orderType": 1, "beType": 1, "code": code,
+                        }).get("data") or {}
+                        names = []
+                        for rnd in d.get("rounds", []):
+                            for ch in rnd.get("choices", []):
+                                if ch.get("isDefault") == 1 and (ch.get("quantity") or 0) > 0:
+                                    n = (ch.get("name") or "").strip()
+                                    if n:
+                                        names.append(n)
+                        cache[code] = names
+                    os.makedirs(CACHE_DIR, exist_ok=True)
+                    with open(path, "w", encoding="utf-8") as f:
+                        json.dump(cache, f, ensure_ascii=False, indent=2)
+                    self._write_details_snapshot(cache)
+            except Exception:
+                pass          # 取子项失败不影响主流程
+        return {c: cache.get(c, []) for c in codes}
+
+    def _write_details_snapshot(self, cache: dict) -> None:
+        """把已抓到的子项也写进快照目录，供离线演示（只在首次补齐时写）。"""
+        snap = os.path.join(SNAPSHOT_DIR, f"details_{self.store}.json")
+        if os.path.exists(snap):
+            return
+        os.makedirs(SNAPSHOT_DIR, exist_ok=True)
+        with open(snap, "w", encoding="utf-8") as f:
+            json.dump({"fetched_at": time.strftime("%Y-%m-%dT%H:%M:%S%z"), "items": cache},
+                      f, ensure_ascii=False, indent=2)
+
     # -- 对外
     def get_catalog(self) -> Catalog:
         if self.mode == "offline":

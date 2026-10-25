@@ -28,6 +28,7 @@ sys.path.insert(0, ROOT)
 
 from mcd_box.adapter import DEFAULT_STORE, Adapter  # noqa: E402
 from mcd_box.candidates import build  # noqa: E402
+from mcd_box.enrich import enrich  # noqa: E402
 from mcd_box.entry import (  # noqa: E402
     describe_inputs, intuition_query, parse_text, random_query, validate,
 )
@@ -108,8 +109,9 @@ def api_box(params: dict) -> tuple[dict, int]:
     if problems:
         return {"error": "；".join(problems)}, 400
 
+    ad = Adapter(store=store, mode="offline" if offline else "auto")
     try:
-        cat = Adapter(store=store, mode="offline" if offline else "auto").get_catalog()
+        cat = ad.get_catalog()
     except Exception as e:
         return {"error": f"取数失败：{e}", "hint": "可加 offline=1 用本地快照"}, 502
 
@@ -117,6 +119,7 @@ def api_box(params: dict) -> tuple[dict, int]:
     seed = _num(params, "seed")
     q.seed = int(seed) if seed else random.SystemRandom().randrange(10 ** 12)
     box = open_box(pool, q, rng=random.Random(q.seed))
+    box = enrich(box, ad, cat)
 
     out = render_json(box, q, cat)
     out["inputs_desc"] = describe_inputs(q)

@@ -68,6 +68,7 @@ class Plan:
     reason: str
     matched: list[str] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
+    meta: dict = field(default_factory=dict)   # 渲染期补充：组合明细 / 热量 / 图片
 
 
 @dataclass

@@ -26,13 +26,34 @@ def render_card(plan: Plan, idx: int | None = None) -> str:
         head,
         f"  {c.name}",
     ]
-    if c.parts:
-        for n, price in c.parts:
-            rows.append(f"    · {n}  ¥{price:.2f}")
-    rows += [
-        f"  分类：{c.category}",
-        f"  为什么是它：{plan.reason}",
-    ]
+    meta = plan.meta or {}
+    parts = meta.get("parts") or []
+    if parts:
+        for it in parts:
+            if it.get("price_yuan") is not None:
+                price = f"¥{it['price_yuan']:.2f}"
+            elif it.get("single_price_yuan") is not None:
+                price = f"单点 ¥{it['single_price_yuan']:.2f}"
+            else:
+                price = "价格并入套餐"
+            kcal = f"{it['kcal']} kcal" if it.get("kcal") is not None else "热量未知"
+            rows.append(f"    · {it['name']}  {price}  {kcal}")
+    elif not meta.get("parts_known", True):
+        rows.append("    · （套餐子项未展开，含什么以门店为准）")
+
+    rows.append(f"  分类：{c.category}")
+    rows.append(f"  为什么是它：{plan.reason}")
+
+    nut = meta.get("nutrition") or {}
+    if nut.get("complete"):
+        rows.append(f"  热量合计：约 {nut['kcal']} kcal · 蛋白 {nut.get('protein_g')}g")
+    elif nut.get("matched"):
+        rows.append(f"  热量：已查到 {nut['matched']}/{nut.get('total')} 项，合计约 {nut['kcal']} kcal（其余未知）")
+    elif parts:
+        rows.append("  热量：暂无（子项匹配不到营养表）")
+    price_meta = meta.get("price") or {}
+    if price_meta.get("was"):
+        rows.append(f"  价格：¥{price_meta['now']:.2f}（原价 ¥{price_meta['was']:.2f}，省 ¥{price_meta['save']:.2f}）")
     if plan.matched:
         rows.append(f"  对上你的：{'、'.join(dict.fromkeys(plan.matched))}")
     for w in plan.warnings:
@@ -87,7 +108,11 @@ def render_json(box: Box, q: Query, cat: Catalog) -> dict:
                 "category": p.cand.category,
                 "price_yuan": p.cand.price_yuan,
                 "original_yuan": p.cand.original_yuan,
-                "parts": [{"name": n, "price_yuan": pr} for n, pr in p.cand.parts],
+                "parts": (p.meta or {}).get("parts", []),
+                "parts_known": (p.meta or {}).get("parts_known", False),
+                "nutrition": (p.meta or {}).get("nutrition", {}),
+                "price": (p.meta or {}).get("price", {}),
+                "image": (p.meta or {}).get("image"),
                 "tags": list(p.cand.tags),
                 "reason": p.reason,
                 "matched": p.matched,
