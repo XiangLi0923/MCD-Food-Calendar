@@ -178,6 +178,12 @@ class Handler(BaseHTTPRequestHandler):
                     self._send(_json({"error": "web/index.html 缺失"}), "application/json; charset=utf-8", 500)
                     return
                 self._send(open(INDEX, "rb").read(), "text/html; charset=utf-8")
+            elif path == "/logo.svg":
+                logo = os.path.join(WEB_DIR, "logo.svg")
+                if os.path.exists(logo):
+                    self._send(open(logo, "rb").read(), "image/svg+xml; charset=utf-8")
+                else:
+                    self._send(b"", "image/svg+xml", 404)
             elif path == "/favicon.ico":
                 self._send(b"", "image/x-icon", 204)
             elif path == "/api/parse":

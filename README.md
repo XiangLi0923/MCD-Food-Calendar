@@ -1,5 +1,7 @@
 # 麦麦食历（MCD Food Calendar）
 
+<img src="web/logo.svg" width="72" height="72" alt="麦麦食历 logo" align="right">
+
 > **今天吃什么，让魔盒替你少想一步。**
 >
 > 你可以告诉魔盒今天的状态、当下的心情和想吃的感觉，也可以什么都不说。

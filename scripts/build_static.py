@@ -107,16 +107,19 @@ def main() -> int:
         json.dump(data, f, ensure_ascii=False, separators=(",", ":"))
         f.write(";\n")
 
-    # 把静态页也复制进去（静态页本身不含后端调用）
+    # 把静态页与 logo 也复制进去（静态页本身不含后端调用）
     src_html = os.path.join(ROOT, "web", "static_index.html")
     if os.path.exists(src_html):
         shutil.copyfile(src_html, os.path.join(OUT_DIR, "index.html"))
         print("index.html 已生成")
+    src_logo = os.path.join(ROOT, "web", "logo.svg")
+    if os.path.exists(src_logo):
+        shutil.copyfile(src_logo, os.path.join(OUT_DIR, "logo.svg"))
 
     # 打包：index.html / data.js 必须在压缩包根目录
     zip_path = os.path.join(ROOT, "web", "static.zip")
     with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
-        for name in ("index.html", "data.js"):
+        for name in ("index.html", "data.js", "logo.svg"):
             p = os.path.join(OUT_DIR, name)
             if os.path.exists(p):
                 z.write(p, name)
