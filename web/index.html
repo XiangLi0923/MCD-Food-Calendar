@@ -275,6 +275,8 @@
 <script>
 /* ------------------------------ 状态 ------------------------------ */
 const S = { state:null, feels:[], size:null, excludes:[], text:"", budget:"", last:null };
+/* 页面可能被当成静态副本打开（file:// 或别的端口），此时 API 要指回真正的本地服务 */
+const API = (location.port === "8000" || location.port === "") ? "" : "http://127.0.0.1:8000";
 const $ = id => document.getElementById(id);
 
 /* ------------------------------ 背景流星雨 ------------------------------ */
@@ -337,7 +339,7 @@ window.addEventListener("resize", ()=>{ sizeCanvas(); });
 /* ------------------------------ 菜单词（真实数据） ------------------------------ */
 async function loadCatalog(){
   try{
-    const r = await fetch("/api/catalog");
+    const r = await fetch(API + "/api/catalog");
     const d = await r.json();
     if(!r.ok) return;
     words = d.words || [];
@@ -391,12 +393,12 @@ async function openBox(extra={}){
   hideErr(); $("echo").style.display="none"; busy(true);
   const p = params(extra); S.last = p;
   try{
-    const r = await fetch("/api/box?" + new URLSearchParams(p));
+    const r = await fetch(API + "/api/box?" + new URLSearchParams(p));
     const d = await r.json();
     if(!r.ok){ showErr(d.error || ("请求失败 " + r.status)); return; }
     render(d);
   }catch(e){
-    showErr("连不上本地服务。请确认已运行 python server.py，并且当前页面地址是 http://127.0.0.1:8000（静态副本没有后端）。");
+    showErr("连不上后端服务。请先在项目目录运行 python server.py（或双击 start_web.cmd），再刷新本页。");
   }finally{ busy(false); }
 }
 $("openBtn").addEventListener("click", ()=>openBox());
@@ -408,7 +410,7 @@ $("parseBtn").addEventListener("click", async ()=>{
   hideErr();
   const text = $("text").value.trim();
   if(!text){ showErr("先跟管家说一句，再让我听听"); return; }
-  const r = await fetch("/api/parse?" + new URLSearchParams({text}));
+  const r = await fetch(API + "/api/parse?" + new URLSearchParams({text}));
   const d = await r.json();
   if(!r.ok){ showErr(d.error || "解析失败"); return; }
   const box = $("echo"); box.style.display = "block";
@@ -485,7 +487,7 @@ function render(d){
   $("fixBtn").addEventListener("click", async ()=>{
     const t = $("fixText").value.trim();
     if(!t) return;
-    const r = await fetch("/api/parse?" + new URLSearchParams({text:t}));
+    const r = await fetch(API + "/api/parse?" + new URLSearchParams({text:t}));
     const p = await r.json();
     if(r.ok){
       const f = p.fields;

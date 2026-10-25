@@ -150,8 +150,15 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Content-Type", ctype)
         self.send_header("Content-Length", str(len(body)))
         self.send_header("Cache-Control", "no-store")
+        # 允许从预览面板的静态副本（file:// 或别的端口）跨源调用本地 API
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "*")
         self.end_headers()
         self.wfile.write(body)
+
+    def do_OPTIONS(self) -> None:  # noqa: N802  CORS 预检
+        self._send(b"", "text/plain; charset=utf-8", 204)
 
     def do_HEAD(self) -> None:  # 预览工具会用 HEAD 探测，别报 501
         path = urlparse(self.path).path
