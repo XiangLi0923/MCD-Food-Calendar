@@ -154,6 +154,8 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "*")
+        # Chrome 的私有网络访问（PNA）预检要求显式许可，否则从沙箱页面请求 127.0.0.1 会被拦成 Failed to fetch
+        self.send_header("Access-Control-Allow-Private-Network", "true")
         self.end_headers()
         self.wfile.write(body)
 

@@ -276,7 +276,25 @@
 /* ------------------------------ 状态 ------------------------------ */
 const S = { state:null, feels:[], size:null, excludes:[], text:"", budget:"", last:null };
 /* 页面可能被当成静态副本打开（file:// 或别的端口），此时 API 要指回真正的本地服务 */
-const API = (location.port === "8000" || location.port === "") ? "" : "http://127.0.0.1:8000";
+/* 页面可能被当成静态副本打开（file:// 或别的端口），此时 API 要指回本地服务。
+   依次尝试：同源 → 8000 → 8001，任何一个活着就能用。 */
+const API_BASES = (location.port === "" || location.protocol === "file:")
+  ? ["http://127.0.0.1:8000", "http://127.0.0.1:8001"]
+  : ["", "http://127.0.0.1:8000", "http://127.0.0.1:8001"];
+let API = API_BASES[0];
+
+async function apiGet(path, params){
+  const qs = params ? "?" + new URLSearchParams(params) : "";
+  let lastErr = null;
+  for(const base of API_BASES){
+    try{
+      const r = await fetch(base + path + qs, { cache: "no-store" });
+      if(r.ok || r.status === 400){ API = base; return r.json(); }
+      lastErr = new Error("HTTP " + r.status);
+    }catch(e){ lastErr = e; }
+  }
+  throw lastErr || new Error("no backend");
+}
 const $ = id => document.getElementById(id);
 
 /* ------------------------------ 背景流星雨 ------------------------------ */
@@ -339,9 +357,7 @@ window.addEventListener("resize", ()=>{ sizeCanvas(); });
 /* ------------------------------ 菜单词（真实数据） ------------------------------ */
 async function loadCatalog(){
   try{
-    const r = await fetch(API + "/api/catalog");
-    const d = await r.json();
-    if(!r.ok) return;
+    const d = await apiGet("/api/catalog");
     words = d.words || [];
     $("marqueeText").innerHTML = (words.slice(0,26).map(w=>`<i>·</i>${w}`).join("") +
                                  words.slice(0,26).map(w=>`<i>·</i>${w}`).join(""));
@@ -393,9 +409,8 @@ async function openBox(extra={}){
   hideErr(); $("echo").style.display="none"; busy(true);
   const p = params(extra); S.last = p;
   try{
-    const r = await fetch(API + "/api/box?" + new URLSearchParams(p));
-    const d = await r.json();
-    if(!r.ok){ showErr(d.error || ("请求失败 " + r.status)); return; }
+    const d = await apiGet("/api/box", p);
+    if(d.error){ showErr(d.error); return; }
     render(d);
   }catch(e){
     showErr("连不上后端服务。请先在项目目录运行 python server.py（或双击 start_web.cmd），再刷新本页。");
@@ -410,9 +425,8 @@ $("parseBtn").addEventListener("click", async ()=>{
   hideErr();
   const text = $("text").value.trim();
   if(!text){ showErr("先跟管家说一句，再让我听听"); return; }
-  const r = await fetch(API + "/api/parse?" + new URLSearchParams({text}));
-  const d = await r.json();
-  if(!r.ok){ showErr(d.error || "解析失败"); return; }
+  const d = await apiGet("/api/parse", {text});
+  if(d.error){ showErr(d.error); return; }
   const box = $("echo"); box.style.display = "block";
   box.innerHTML =
     '<div class="et">管家听到的是这样，对吗？</div>' +
@@ -487,9 +501,9 @@ function render(d){
   $("fixBtn").addEventListener("click", async ()=>{
     const t = $("fixText").value.trim();
     if(!t) return;
-    const r = await fetch(API + "/api/parse?" + new URLSearchParams({text:t}));
-    const p = await r.json();
-    if(r.ok){
+    let p = null;
+    try{ p = await apiGet("/api/parse", {text:t}); }catch(e){ p = null; }
+    if(p && !p.error){
       const f = p.fields;
       if(f.budget_yuan != null) S.budget = f.budget_yuan;
       if(f.exclude && f.exclude.length) S.excludes = Array.from(new Set([...S.excludes, ...f.exclude]));
