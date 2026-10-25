@@ -49,6 +49,8 @@ class Candidate:
     is_multi: bool          # 名称看着像多人餐
     is_nonfood: bool        # 周边/玩具/徽章，不是餐品
     is_main: bool           # 能当一顿饭（汉堡/套餐/卷/炸鸡），甜品饮品为 False
+    main_code: str = ""     # 组合餐的主商品 code（去重按它算）；非组合为空
+    parts: tuple = ()       # 组合明细 ((名称, 价格), ...)；非组合为空
 
     @property
     def has_price(self) -> bool:

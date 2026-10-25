@@ -123,6 +123,25 @@ def api_box(params: dict) -> tuple[dict, int]:
     return out, 200
 
 
+def api_catalog(params: dict) -> tuple[dict, int]:
+    """给前端背景用的"菜单词"：真实餐品名 + 门店规模，让界面里飘的是真东西。"""
+    store = _first(params, "store") or DEFAULT_STORE
+    offline = SERVER_OFFLINE or _first(params, "offline") in ("1", "true", "yes")
+    try:
+        cat = Adapter(store=store, mode="offline" if offline else "auto").get_catalog()
+    except Exception as e:
+        return {"error": str(e)}, 502
+    words = [i.name for i in cat.items if i.name][:80]
+    return {
+        "store": {"storeCode": cat.store, "storeName": cat.store_name},
+        "count": len(cat.items),
+        "categories": len(cat.categories),
+        "words": words,
+        "source": cat.source,
+        "fetched_at": cat.fetched_at,
+    }, 200
+
+
 class Handler(BaseHTTPRequestHandler):
     server_version = "MaiBox/0.1"
 
@@ -133,6 +152,11 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Cache-Control", "no-store")
         self.end_headers()
         self.wfile.write(body)
+
+    def do_HEAD(self) -> None:  # 预览工具会用 HEAD 探测，别报 501
+        path = urlparse(self.path).path
+        ok = path in ("/", "/index.html") or path.startswith("/api/")
+        self._send(b"", "text/html; charset=utf-8", 200 if ok else 404)
 
     def do_GET(self) -> None:  # noqa: N802
         path = urlparse(self.path).path
@@ -149,6 +173,9 @@ class Handler(BaseHTTPRequestHandler):
                 self._send(_json(payload, status), "application/json; charset=utf-8", status)
             elif path == "/api/box":
                 payload, status = api_box(parse_qs(urlparse(self.path).query))
+                self._send(_json(payload, status), "application/json; charset=utf-8", status)
+            elif path == "/api/catalog":
+                payload, status = api_catalog(parse_qs(urlparse(self.path).query))
                 self._send(_json(payload, status), "application/json; charset=utf-8", status)
             else:
                 self._send(_json({"error": "not found"}), "application/json; charset=utf-8", 404)

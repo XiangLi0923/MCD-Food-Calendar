@@ -14,6 +14,7 @@ import random
 from dataclasses import dataclass, field
 
 from .candidates import Candidate
+from .meals import build_meals
 
 # ---------------------------------------------------------------- 词表
 # 状态 → 推荐倾向。只影响"往哪类餐品倾斜"，不做情绪分析、不推营养。
@@ -86,6 +87,11 @@ def _text(c: Candidate) -> str:
 def _hits(c: Candidate, words: tuple[str, ...]) -> int:
     t = _text(c)
     return sum(1 for w in words if w in t)
+
+
+def _mkey(c: Candidate) -> str:
+    """去重主键：组合餐按主商品算，避免「板烧+薯条」和「板烧+玉米」被当成两款。"""
+    return c.main_code or c.code
 
 
 def _has_set(c: Candidate) -> bool:
@@ -189,7 +195,7 @@ def pick_understand(pool: list[Candidate], q: Query) -> tuple[Candidate, list[st
 
 
 def pick_safe(pool: list[Candidate], q: Query, taken: set[str]) -> Candidate | None:
-    cands = [c for c in pool if c.code not in taken]
+    cands = [c for c in pool if _mkey(c) not in taken]
     if not cands:
         return None
     med = _median(pool)
@@ -207,7 +213,7 @@ def pick_safe(pool: list[Candidate], q: Query, taken: set[str]) -> Candidate | N
 
 def pick_surprise(pool: list[Candidate], q: Query, taken: set[str],
                   ref: Candidate | None) -> Candidate | None:
-    cands = [c for c in pool if c.code not in taken]
+    cands = [c for c in pool if _mkey(c) not in taken]
     if not cands:
         return None
     med = _median(pool)
@@ -236,7 +242,9 @@ def _reason_understand(p: Plan, q: Query) -> str:
         bits.append(f"你说「{q.state}」，挑了{note}这一挂")
     for f in q.feel[:2]:
         bits.append(f"命中「{f}」")
-    if _has_set(c):
+    if c.parts:
+        bits.append(f"给你配齐了这顿：{' + '.join(n for n, _ in c.parts)}")
+    elif _has_set(c):
         bits.append("搭配是完整的，不用再想加什么")
     if q.budget_yuan is not None:
         gap = q.budget_yuan - c.price_yuan
@@ -251,7 +259,7 @@ def _reason_understand(p: Plan, q: Query) -> str:
 
 def _reason_safe(p: Plan, q: Query, med: float) -> str:
     c = p.cand
-    bits = ["搭配是现成的，选它不用再挑"]
+    bits = ["主食和小食都配好了，选它不用再挑" if c.parts else "搭配是现成的，选它不用再挑"]
     if c.price_yuan <= med:
         bits.append(f"{_yuan(c.price_yuan)}，在这次候选里属于中位以下")
     else:
@@ -283,38 +291,46 @@ def open_box(pool: list[Candidate], q: Query, rng: random.Random | None = None) 
     rng = rng or random.Random(seed)
 
     filtered, notes = hard_filter(pool, q)
-    med = _median(filtered) if filtered else 0.0
+    meals = build_meals(filtered, q)      # 把单品凑成"一顿饭"
+    med = _median(meals) if meals else 0.0
 
-    if not filtered:
+    if not meals:
         return Box(plans=[], pool_size=0, seed=seed,
                    notes=notes + ["这个条件下没有可选餐品"], stats={"median": med})
 
     plans: list[Plan] = []
 
     if q.entry == "random":
-        # 真随机：在"能当一顿饭"的候选里均匀抽样，不排序、不用任何偏好。
-        # 只抽主食是产品规则（推荐的是一顿饭，不是一盒饮料），不是个性化排序。
-        bag = [c for c in filtered if c.is_main] or filtered
-        picks = rng.sample(bag, k=min(3, len(bag)))
+        # 真随机：在"一顿饭"的候选里均匀抽样，不排序、不用任何偏好。
+        seen: set[str] = set()
+        picks: list[Candidate] = []
+        for c in rng.sample(meals, k=len(meals)):
+            k = _mkey(c)
+            if k in seen:
+                continue
+            seen.add(k)
+            picks.append(c)
+            if len(picks) >= 3:
+                break
         for c in picks:
             plans.append(Plan("random", f"随机 {len(plans) + 1}", c,
                               f"在你的限制里随手抽到的：{_yuan(c.price_yuan)}。"))
     else:
         # 懂你
-        c1, matched = pick_understand(filtered, q)
+        c1, matched = pick_understand(meals, q)
         p1 = Plan("understand", ROLE_LABEL["understand"], c1, "", matched)
         p1.reason = _reason_understand(p1, q)
         plans.append(p1)
 
         # 稳妥
-        c2 = pick_safe(filtered, q, {c1.code})
+        c2 = pick_safe(meals, q, {_mkey(c1)})
         if c2:
             p2 = Plan("safe", ROLE_LABEL["safe"], c2, "")
             p2.reason = _reason_safe(p2, q, med)
             plans.append(p2)
 
         # 惊喜
-        c3 = pick_surprise(filtered, q, {p.cand.code for p in plans}, c1)
+        c3 = pick_surprise(meals, q, {_mkey(p.cand) for p in plans}, c1)
         if c3:
             p3 = Plan("surprise", ROLE_LABEL["surprise"], c3, "")
             p3.reason = _reason_surprise(p3, q, c1)
@@ -329,5 +345,5 @@ def open_box(pool: list[Candidate], q: Query, rng: random.Random | None = None) 
     if len(plans) < 3:
         notes.append(f"只凑到 {len(plans)} 个符合条件的方案，没有硬凑第三个")
 
-    return Box(plans=plans, pool_size=len(filtered), seed=seed, notes=notes,
-               stats={"median": round(med, 2), "priced": len(filtered)})
+    return Box(plans=plans, pool_size=len(meals), seed=seed, notes=notes,
+               stats={"median": round(med, 2), "priced": len(meals)})

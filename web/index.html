@@ -6,305 +6,528 @@
 <title>麦麦食历 · 选餐魔盒</title>
 <style>
   :root{
-    --red:#DA291C; --yellow:#FFC72C; --ink:#2b2b2b; --gray:#8a8a8a;
-    --line:#e8e4df; --bg:#faf8f5; --card:#fff;
-    --sur:#6b4fa0; --safe:#c77d00;
+    --paper:#FFF6E5; --paper2:#FFEFD2; --ink:#2A1B12; --ink2:#5b4632;
+    --red:#D62300; --red2:#A81B00; --yellow:#FFC72C; --green:#4C8B3A;
+    --purple:#7A4FA3; --line:#2A1B12; --shadow:rgba(42,27,18,.35);
   }
-  *{box-sizing:border-box; margin:0; padding:0;}
-  body{background:var(--bg); color:var(--ink);
-       font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif; line-height:1.6;}
-  .wrap{max-width:680px; margin:0 auto; padding:20px 16px 60px;}
-  header{text-align:center; padding:26px 0 8px;}
-  header h1{font-size:30px; letter-spacing:2px;}
-  header h1 .dot{color:var(--red);}
-  header p{color:var(--gray); font-size:14px; margin-top:6px;}
-  .sub{text-align:center; color:var(--ink); font-size:15px; margin-top:2px;}
-  .sub b{color:var(--red);}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+    line-height:1.65;
+    image-rendering:pixelated;
+    overflow-x:hidden;
+  }
+  /* 像素网格底纹 */
+  body::before{
+    content:""; position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.5;
+    background-image:radial-gradient(rgba(42,27,18,.10) 1px, transparent 1px);
+    background-size:8px 8px;
+  }
+  #rain{position:fixed; inset:0; z-index:1; pointer-events:none; opacity:.55;}
 
-  .panel{background:var(--card); border:1px solid var(--line); border-radius:14px;
-         padding:18px 16px; margin-top:14px;}
-  .q{font-size:14px; font-weight:600; margin-bottom:8px;}
-  .q small{color:var(--gray); font-weight:400; margin-left:6px;}
-  .chips{display:flex; flex-wrap:wrap; gap:8px;}
-  .chip{border:1px solid var(--line); background:#fff; color:var(--ink);
-        padding:7px 14px; border-radius:999px; cursor:pointer; font-size:14px;
-        user-select:none; transition:.12s;}
-  .chip:hover{border-color:var(--red);}
-  .chip.on{background:var(--red); border-color:var(--red); color:#fff; font-weight:600;}
-  .chip.on.y{background:var(--yellow); border-color:var(--yellow); color:var(--ink);}
+  .wrap{position:relative; z-index:2; max-width:720px; margin:0 auto; padding:18px 14px 80px;}
 
-  details{margin-top:14px;}
-  summary{cursor:pointer; font-size:13px; color:var(--gray);}
-  .row{display:flex; gap:10px; align-items:center; margin-top:10px; flex-wrap:wrap;}
-  .row label{font-size:13px; color:var(--gray); white-space:nowrap;}
-  input[type=number]{width:110px; border:1px solid var(--line); border-radius:8px;
-        padding:7px 10px; font-size:14px;}
+  /* 像素面板 */
+  .px{
+    background:var(--paper2);
+    border:4px solid var(--line);
+    box-shadow:6px 6px 0 var(--shadow), inset 0 0 0 3px #fff8ea;
+    padding:16px;
+  }
+  .px + .px{margin-top:16px;}
 
-  .textline{display:flex; gap:8px; margin-top:6px;}
-  input[type=text]{flex:1; border:1px solid var(--line); border-radius:10px;
-        padding:10px 12px; font-size:14px;}
-  .ghost{background:#fff; color:var(--ink); border:1px solid var(--line); border-radius:10px;
-         padding:10px 14px; font-size:14px; cursor:pointer;}
-  .ghost:hover{border-color:var(--red); color:var(--red);}
+  header{text-align:center; padding:20px 0 6px;}
+  h1{
+    font-size:32px; letter-spacing:6px; color:var(--red);
+    text-shadow:3px 3px 0 var(--yellow), 6px 6px 0 var(--shadow);
+    font-weight:900;
+  }
+  .h1sub{
+    display:inline-block; margin-top:10px; padding:3px 12px;
+    background:var(--ink); color:var(--yellow); font-size:12px; letter-spacing:3px;
+  }
+  .tagline{margin-top:10px; font-size:15px; color:var(--ink2);}
+  .tagline b{color:var(--red);}
 
-  .actions{display:flex; gap:10px; margin-top:16px;}
-  .btn{flex:1; border:none; border-radius:12px; padding:13px 0; font-size:16px;
-       font-weight:700; cursor:pointer; letter-spacing:2px; transition:.12s;}
-  .btn.main{background:var(--red); color:#fff;}
-  .btn.main:hover{filter:brightness(1.08);}
-  .btn.rand{background:var(--yellow); color:var(--ink);}
-  .btn.rand:hover{filter:brightness(1.05);}
-  .btn:disabled{opacity:.45; cursor:default;}
+  /* 跑马灯：真实菜单词 */
+  .marquee{
+    margin:14px 0 4px; border-top:3px dashed var(--line); border-bottom:3px dashed var(--line);
+    padding:6px 0; overflow:hidden; white-space:nowrap; background:rgba(255,255,255,.45);
+  }
+  .marquee span{display:inline-block; animation:scroll 38s linear infinite; font-size:12.5px; color:var(--ink2);}
+  .marquee i{font-style:normal; margin:0 14px; opacity:.55;}
+  @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
-  #echo{display:none; margin-top:14px; background:#fff8e6; border:1px solid #f0dda8;
-        border-radius:10px; padding:12px 14px; font-size:14px;}
-  #echo .e-title{font-weight:600; margin-bottom:6px;}
-  #echo .e-row{color:#555;}
-  #echo .e-actions{margin-top:10px; display:flex; gap:10px;}
-  #echo .mini{border:none; border-radius:8px; padding:8px 16px; font-size:14px; cursor:pointer;}
-  #echo .mini.go{background:var(--red); color:#fff;}
-  #echo .mini.edit{background:#fff; border:1px solid var(--line);}
+  /* 管家气泡 */
+  .butler{display:flex; gap:12px; align-items:flex-start;}
+  .avatar{
+    width:52px; height:52px; flex:0 0 52px; display:grid; place-items:center;
+    font-size:26px; background:var(--yellow); border:4px solid var(--line);
+    box-shadow:4px 4px 0 var(--shadow);
+  }
+  .bubble{
+    position:relative; flex:1; background:#fff; border:4px solid var(--line);
+    padding:10px 14px; font-size:14.5px; box-shadow:4px 4px 0 var(--shadow);
+  }
+  .bubble::after{
+    content:""; position:absolute; left:-11px; top:16px; width:0; height:0;
+    border:7px solid transparent; border-right-color:var(--line);
+  }
 
-  #err{display:none; margin-top:12px; background:#fdecea; color:var(--red);
-       border:1px solid #f5c6c0; border-radius:10px; padding:10px 14px; font-size:14px;}
+  .q{font-size:15px; font-weight:800; margin:18px 0 10px; display:flex; align-items:center; gap:8px;}
+  .q em{
+    font-style:normal; background:var(--red); color:#fff; font-size:11px; padding:1px 7px;
+    border:2px solid var(--line); letter-spacing:1px;
+  }
+  .q small{font-weight:400; color:var(--ink2); font-size:12px;}
 
-  #loading{display:none; text-align:center; color:var(--gray); padding:26px 0; font-size:14px;}
-  #meta{color:var(--gray); font-size:12.5px; margin-top:10px; text-align:center;}
+  .chips{display:flex; flex-wrap:wrap; gap:10px;}
+  .chip{
+    background:#fff; border:3px solid var(--line); padding:8px 14px; font-size:14px;
+    cursor:pointer; user-select:none; box-shadow:4px 4px 0 var(--shadow);
+    transition:transform .06s linear, box-shadow .06s linear, background .1s;
+  }
+  .chip:active{transform:translate(3px,3px); box-shadow:1px 1px 0 var(--shadow);}
+  .chip.on{background:var(--red); color:#fff; box-shadow:4px 4px 0 var(--red2);}
+  .chip.on.y{background:var(--yellow); color:var(--ink); box-shadow:4px 4px 0 #b98f00;}
 
-  #result{display:none; margin-top:14px;}
-  .card{background:var(--card); border:1px solid var(--line); border-radius:14px;
-        padding:16px; margin-bottom:12px; position:relative;}
-  .card .role{display:inline-block; color:#fff; border-radius:6px; padding:2px 10px;
-              font-size:13px; font-weight:700;}
-  .r-under{background:var(--red);} .r-safe{background:var(--safe);} .r-sur{background:var(--sur);}
-  .card .price{font-size:26px; font-weight:800; margin-left:8px;}
-  .card .name{font-size:17px; font-weight:700; margin-top:6px;}
-  .card .cat{color:var(--gray); font-size:13px;}
-  .card .why{margin-top:8px; font-size:14px; color:#444;}
-  .card .tags{margin-top:8px; display:flex; flex-wrap:wrap; gap:6px;}
-  .card .tag{background:#f3efe9; border-radius:6px; padding:1px 8px; font-size:12px; color:#666;}
-  .card .warn{color:#b26a00; font-size:12.5px; margin-top:6px;}
-  footer{margin-top:26px; text-align:center; color:var(--gray); font-size:12px;}
+  .more{margin-top:16px;}
+  .more summary{
+    cursor:pointer; font-size:13.5px; color:var(--ink2); padding:6px 0;
+    border-bottom:3px dotted var(--line); user-select:none;
+  }
+  .row{display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:12px;}
+  .row label{font-size:13.5px; color:var(--ink2);}
+  input[type=number]{
+    width:120px; border:3px solid var(--line); background:#fff; padding:8px 10px; font-size:14px;
+    box-shadow:inset 2px 2px 0 rgba(42,27,18,.08);
+  }
+  input[type=text]{
+    flex:1; min-width:0; border:3px solid var(--line); background:#fff; padding:10px 12px; font-size:14px;
+    box-shadow:inset 2px 2px 0 rgba(42,27,18,.08);
+  }
+  input:focus{outline:3px solid var(--yellow); outline-offset:1px;}
 
-  @media (max-width:480px){
-    header h1{font-size:25px;} .actions{flex-direction:column;}
+  .talk{margin-top:18px;}
+  .talkline{display:flex; gap:10px; margin-top:8px;}
+
+  .actions{display:flex; gap:12px; margin-top:18px;}
+  .btn{
+    flex:1; border:4px solid var(--line); background:var(--red); color:#fff;
+    font-size:17px; font-weight:900; letter-spacing:4px; padding:13px 0; cursor:pointer;
+    box-shadow:6px 6px 0 var(--shadow);
+    transition:transform .06s linear, box-shadow .06s linear;
+  }
+  .btn.rand{background:var(--yellow); color:var(--ink); letter-spacing:2px; font-size:16px;}
+  .btn:active{transform:translate(4px,4px); box-shadow:2px 2px 0 var(--shadow);}
+  .btn:disabled{filter:grayscale(.5); opacity:.6; cursor:default;}
+
+  .ghost{
+    border:3px solid var(--line); background:#fff; padding:10px 14px; font-size:14px;
+    cursor:pointer; box-shadow:4px 4px 0 var(--shadow);
+  }
+  .ghost:active{transform:translate(3px,3px); box-shadow:1px 1px 0 var(--shadow);}
+
+  #echo{display:none; margin-top:16px; background:#FFF8E1; border:3px solid var(--line); padding:12px; box-shadow:4px 4px 0 var(--shadow);}
+  #echo .et{font-weight:800; margin-bottom:6px;}
+  #echo .er{font-size:13.5px; color:var(--ink2);}
+  #echo .ea{display:flex; gap:10px; margin-top:10px;}
+
+  #err{display:none; margin-top:14px; background:#FFE8E5; border:3px solid var(--red); color:var(--red2); padding:10px 12px; font-size:13.5px;}
+
+  #loading{display:none; text-align:center; padding:26px 0; font-size:14px; color:var(--ink2);}
+  #loading .dots::after{content:""; animation:dots 1s steps(4,end) infinite;}
+  @keyframes dots{0%{content:""}25%{content:"."}50%{content:".."}75%{content:"..."}}
+
+  #meta{font-size:12px; color:var(--ink2); text-align:center; margin:14px 0 6px;}
+
+  .card{
+    background:#fff; border:4px solid var(--line); box-shadow:6px 6px 0 var(--shadow);
+    margin-bottom:16px; position:relative;
+  }
+  .card .bar{height:10px; background:var(--red); border-bottom:4px solid var(--line);}
+  .card.r-safe .bar{background:#E08A00;} .card.r-sur .bar{background:var(--purple);}
+  .card .body{padding:14px;}
+  .card .top{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;}
+  .role{
+    background:var(--red); color:#fff; font-size:12px; letter-spacing:2px; padding:2px 8px;
+    border:2px solid var(--line);
+  }
+  .r-safe .role{background:#E08A00;} .r-sur .role{background:var(--purple);}
+  .price{font-size:26px; font-weight:900; letter-spacing:1px;}
+  .name{font-size:16px; font-weight:800; margin-top:8px;}
+  .parts{margin-top:8px; border-left:4px solid var(--yellow); padding-left:10px;}
+  .parts div{font-size:13px; color:var(--ink2); display:flex; justify-content:space-between; gap:12px;}
+  .cat{font-size:12px; color:var(--ink2); margin-top:6px;}
+  .why{margin-top:8px; font-size:14px;}
+  .tags{margin-top:8px; display:flex; flex-wrap:wrap; gap:6px;}
+  .tag{font-size:11.5px; background:var(--paper2); border:2px solid var(--line); padding:1px 7px;}
+  .warn{margin-top:6px; font-size:12.5px; color:#9a5b00;}
+
+  .listen{margin-top:8px;}
+  footer{margin-top:30px; text-align:center; font-size:11.5px; color:var(--ink2); line-height:1.9;}
+  footer b{color:var(--red);}
+
+  @media (max-width:520px){
+    h1{font-size:26px; letter-spacing:4px;}
+    .actions{flex-direction:column;}
+    .avatar{display:none;}
+    .bubble::after{display:none;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .marquee span{animation:none;}
+    #rain{display:none;}
   }
 </style>
 </head>
 <body>
+<canvas id="rain"></canvas>
+
 <div class="wrap">
   <header>
-    <h1>麦麦食历<span class="dot">.</span></h1>
-    <p>MCD Food Calendar</p>
+    <h1>麦麦食历</h1>
+    <div><span class="h1sub">MCD FOOD CALENDAR</span></div>
+    <div class="tagline">今天吃什么，让管家替你<b>少想一步</b>。</div>
   </header>
-  <div class="sub">今天吃什么，让魔盒替你<b>少想一步</b>。</div>
 
-  <div class="panel">
-    <div class="q">今天怎么样？<small>可以不选</small></div>
-    <div class="chips" id="chips-state">
-      <span class="chip" data-k="state" data-v="累了">累了</span>
-      <span class="chip" data-k="state" data-v="心情不错">心情不错</span>
-      <span class="chip" data-k="state" data-v="有点低落">有点低落</span>
-      <span class="chip" data-k="state" data-v="想奖励自己">想奖励自己</span>
-      <span class="chip" data-k="state" data-v="就想简单解决">就想简单解决</span>
+  <div class="marquee"><span id="marqueeText"></span></div>
+
+  <div class="px">
+    <div class="butler">
+      <div class="avatar">🍔</div>
+      <div class="bubble" id="bubble">你好呀，我是麦麦管家。今天过得怎么样？不想说的话，直接按「开盒」也行。</div>
     </div>
 
-    <div class="q" style="margin-top:16px;">想吃点什么感觉的？<small>最多两个，可不选</small></div>
-    <div class="chips" id="chips-feel">
-      <span class="chip" data-k="feel" data-v="满足">满足</span>
-      <span class="chip" data-k="feel" data-v="热乎">热乎</span>
-      <span class="chip" data-k="feel" data-v="清爽">清爽</span>
-      <span class="chip" data-k="feel" data-v="甜一点">甜一点</span>
-      <span class="chip" data-k="feel" data-v="想尝鲜">想尝鲜</span>
+    <div class="q"><em>01</em>今天过得怎么样？<small>不选也没关系</small></div>
+    <div class="chips" id="c-state">
+      <div class="chip" data-k="state" data-v="累了">累瘫了</div>
+      <div class="chip" data-k="state" data-v="心情不错">美滋滋</div>
+      <div class="chip" data-k="state" data-v="有点低落">有点丧</div>
+      <div class="chip" data-k="state" data-v="想奖励自己">想犒劳自己</div>
+      <div class="chip" data-k="state" data-v="就想简单解决">速战速决</div>
     </div>
 
-    <div class="q" style="margin-top:16px;">有多饿？<small>可不选</small></div>
-    <div class="chips" id="chips-size">
-      <span class="chip" data-k="size" data-v="垫一下">垫一下</span>
-      <span class="chip" data-k="size" data-v="正常">正常</span>
-      <span class="chip" data-k="size" data-v="很饿">很饿</span>
+    <div class="q"><em>02</em>嘴巴想吃什么感觉的？<small>最多挑两个</small></div>
+    <div class="chips" id="c-feel">
+      <div class="chip" data-k="feel" data-v="满足">吃爽的</div>
+      <div class="chip" data-k="feel" data-v="热乎">热乎乎的</div>
+      <div class="chip" data-k="feel" data-v="清爽">清爽一点</div>
+      <div class="chip" data-k="feel" data-v="甜一点">来点甜的</div>
+      <div class="chip" data-k="feel" data-v="想尝鲜">尝个新鲜</div>
     </div>
 
-    <details>
-      <summary>再准一点（预算 / 不吃什么）</summary>
+    <div class="q"><em>03</em>现在饿到什么程度？<small>决定给你配几样</small></div>
+    <div class="chips" id="c-size">
+      <div class="chip" data-k="size" data-v="垫一下">垫一口</div>
+      <div class="chip" data-k="size" data-v="正常">正常一餐</div>
+      <div class="chip" data-k="size" data-v="很饿">饿坏了</div>
+    </div>
+
+    <details class="more">
+      <summary>再交代两句（预算 / 不吃什么）</summary>
       <div class="row">
-        <label>预算上限</label>
-        <input type="number" id="budget" min="1" max="300" step="1" placeholder="不限（¥）">
+        <label>最多花多少</label>
+        <input type="number" id="budget" min="1" max="300" step="1" placeholder="不填＝不设限">
+        <label>元以内</label>
       </div>
       <div class="row">
         <label>不吃</label>
-        <div class="chips" id="chips-exclude">
-          <span class="chip" data-k="exclude" data-v="牛肉">牛肉</span>
-          <span class="chip" data-k="exclude" data-v="辣">辣</span>
-          <span class="chip" data-k="exclude" data-v="冰">冰</span>
-          <span class="chip" data-k="exclude" data-v="咖啡">咖啡</span>
-          <span class="chip" data-k="exclude" data-v="猪肉">猪肉</span>
-          <span class="chip" data-k="exclude" data-v="鱼">鱼</span>
+        <div class="chips" id="c-exclude">
+          <div class="chip" data-k="exclude" data-v="牛肉">牛肉</div>
+          <div class="chip" data-k="exclude" data-v="辣">辣</div>
+          <div class="chip" data-k="exclude" data-v="冰">冰的</div>
+          <div class="chip" data-k="exclude" data-v="咖啡">咖啡</div>
+          <div class="chip" data-k="exclude" data-v="猪肉">猪肉</div>
+          <div class="chip" data-k="exclude" data-v="鱼">鱼</div>
         </div>
       </div>
     </details>
 
-    <div class="q" style="margin-top:16px;">或者，直接说一句话<small>例如：今天汇报搞砸了，想吃点满足的，别超过35元</small></div>
-    <div class="textline">
-      <input type="text" id="text" placeholder="想说就说，不想说就跳过">
-      <button class="ghost" id="parseBtn">解析看看</button>
+    <div class="talk">
+      <div class="q"><em>或者</em>直接跟管家说<small>说人话就行</small></div>
+      <div class="talkline">
+        <input type="text" id="text" placeholder="今天开完运动会，想吃顿饱的，别超过 35">
+        <button class="ghost" id="parseBtn">管家听听</button>
+      </div>
     </div>
 
     <div class="actions">
-      <button class="btn main" id="openBtn">开 盒</button>
-      <button class="btn rand" id="randBtn">随便来</button>
+      <button class="btn" id="openBtn">开 盒</button>
+      <button class="btn rand" id="randBtn">管家随便来</button>
     </div>
 
     <div id="echo"></div>
     <div id="err"></div>
   </div>
 
-  <div id="loading">正在打开魔盒…</div>
+  <div id="loading"><span class="dots">管家正在翻菜单</span></div>
   <div id="meta"></div>
   <div id="result"></div>
 
   <footer>
-    数据来自麦当劳官方 MCP · 价格以门店实际为准 · 忌口按名称匹配，过敏请向门店核实<br>
-    本工具只负责"选"，下单请去麦当劳官方渠道
+    数据来自麦当劳官方 MCP · 价格以门店实际为准<br>
+    忌口按名称匹配，<b>过敏请向门店核实</b> · 本工具只负责「选」，下单请去官方渠道
   </footer>
 </div>
 
 <script>
-const S = {state:null, feels:[], size:null, excludes:[], text:"", budget:"", last:{}};
+/* ------------------------------ 状态 ------------------------------ */
+const S = { state:null, feels:[], size:null, excludes:[], text:"", budget:"", last:null };
+const $ = id => document.getElementById(id);
 
-function qs(obj){
-  const p = new URLSearchParams();
-  for(const k in obj){ if(obj[k]!==null && obj[k]!==undefined && obj[k]!=="") p.set(k, obj[k]); }
-  return p;
+/* ------------------------------ 背景流星雨 ------------------------------ */
+const EMOJI = ["🍔","🍟","🍗","🥤","🍦","🥧","🍎","🥛","☕","🍪","🧀","🥗"];
+const cv = $("rain"), ctx = cv.getContext("2d");
+let drops = [], words = [];
+
+function sizeCanvas(){
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  cv.width = innerWidth * dpr; cv.height = innerHeight * dpr;
+  cv.style.width = innerWidth + "px"; cv.style.height = innerHeight + "px";
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+function newDrop(init){
+  const isWord = words.length && Math.random() < 0.35;
+  return {
+    x: Math.random()*innerWidth,
+    y: init ? Math.random()*innerHeight : -40,
+    vy: 0.55 + Math.random()*1.15,
+    vx: (Math.random()-0.5)*0.25,
+    rot: (Math.random()-0.5)*0.5,
+    vr: (Math.random()-0.5)*0.01,
+    size: isWord ? 11 + Math.random()*3 : 16 + Math.random()*14,
+    text: isWord ? words[(Math.random()*words.length)|0] : EMOJI[(Math.random()*EMOJI.length)|0],
+    isWord, alpha: 0.28 + Math.random()*0.35
+  };
+}
+function initRain(){
+  sizeCanvas();
+  const n = innerWidth < 520 ? 16 : 30;
+  drops = Array.from({length:n}, ()=>newDrop(true));
+}
+function tick(){
+  ctx.clearRect(0,0,innerWidth,innerHeight);
+  for(const d of drops){
+    d.x += d.vx; d.y += d.vy; d.rot += d.vr;
+    if(d.y > innerHeight + 40){ Object.assign(d, newDrop(false)); }
+    ctx.save();
+    ctx.globalAlpha = d.alpha;
+    ctx.translate(d.x, d.y); ctx.rotate(d.rot);
+    if(d.isWord){
+      ctx.font = `${d.size}px "Microsoft YaHei",sans-serif`;
+      const w = ctx.measureText(d.text).width;
+      ctx.fillStyle = "rgba(255,255,255,.75)";
+      ctx.fillRect(-w/2-3, -d.size, w+6, d.size+6);
+      ctx.fillStyle = "#5b4632";
+      ctx.textAlign = "center";
+      ctx.fillText(d.text, 0, 1);
+    }else{
+      ctx.font = `${d.size}px serif`;
+      ctx.textAlign = "center";
+      ctx.fillText(d.text, 0, 0);
+    }
+    ctx.restore();
+  }
+  requestAnimationFrame(tick);
+}
+window.addEventListener("resize", ()=>{ sizeCanvas(); });
+
+/* ------------------------------ 菜单词（真实数据） ------------------------------ */
+async function loadCatalog(){
+  try{
+    const r = await fetch("/api/catalog");
+    const d = await r.json();
+    if(!r.ok) return;
+    words = d.words || [];
+    $("marqueeText").innerHTML = (words.slice(0,26).map(w=>`<i>·</i>${w}`).join("") +
+                                 words.slice(0,26).map(w=>`<i>·</i>${w}`).join(""));
+    $("bubble").textContent = `这家店今天有 ${d.count} 样餐品、${d.categories} 个品类。` +
+      `你说说今天怎么样，我替你砍到三份——不用你翻菜单。`;
+  }catch(e){ /* 背景装饰，失败不影响主流程 */ }
 }
 
-document.querySelectorAll(".chip").forEach(c=>{
-  c.addEventListener("click", ()=>{
-    const k=c.dataset.k, v=c.dataset.v;
-    if(k==="state"||k==="size"){ S[k] = S[k]===v ? null : v; }
+/* ------------------------------ 交互 ------------------------------ */
+document.querySelectorAll(".chip").forEach(el=>{
+  el.addEventListener("click", ()=>{
+    const k = el.dataset.k, v = el.dataset.v;
+    if(k==="state" || k==="size"){ S[k] = (S[k]===v ? null : v); }
     else{
       const arr = k==="feel" ? S.feels : S.excludes;
       const i = arr.indexOf(v);
-      if(i>=0){ arr.splice(i,1); }
+      if(i>=0) arr.splice(i,1);
       else{
-        if(k==="feel" && arr.length>=2){ showErr("感觉最多选两个"); return; }
+        if(k==="feel" && arr.length>=2){ showErr("嘴巴一次说两个就够啦，先挑最想的那个"); return; }
         arr.push(v);
       }
     }
-    renderChips();
+    paintChips();
   });
 });
-
-function renderChips(){
-  document.querySelectorAll(".chip").forEach(c=>{
-    const k=c.dataset.k, v=c.dataset.v;
-    const on = k==="state"||k==="size" ? S[k]===v
+function paintChips(){
+  document.querySelectorAll(".chip").forEach(el=>{
+    const k = el.dataset.k, v = el.dataset.v;
+    const on = (k==="state"||k==="size") ? S[k]===v
              : (k==="feel" ? S.feels : S.excludes).includes(v);
-    c.classList.toggle("on", on);
+    el.classList.toggle("on", on);
   });
 }
-
-function showErr(msg){
-  const e=document.getElementById("err");
-  e.style.display="block"; e.textContent=msg;
+function showErr(msg){ const e=$("err"); e.style.display="block"; e.textContent=msg; }
+function hideErr(){ $("err").style.display="none"; }
+function busy(on){
+  $("loading").style.display = on ? "block" : "none";
+  $("openBtn").disabled = on; $("randBtn").disabled = on;
 }
-function hideErr(){ document.getElementById("err").style.display="none"; }
-
-function loading(on){
-  document.getElementById("loading").style.display = on?"block":"none";
-  document.getElementById("openBtn").disabled = on;
-  document.getElementById("randBtn").disabled = on;
-}
-
-function currentParams(extra){
+function params(extra={}){
   const p = {
     state:S.state, feel:S.feels.join(","), size:S.size,
-    budget:S.budget||undefined, exclude:S.excludes.join(","),
+    budget:S.budget || undefined, exclude:S.excludes.join(",")
   };
   if(S.text) p.text = S.text;
-  Object.assign(p, extra||{});
-  return p;
+  return Object.assign(p, extra);
 }
-
-async function openBox(extra){
-  hideErr();
-  const echo=document.getElementById("echo"); echo.style.display="none";
-  const p = currentParams(extra);
-  S.last = p;
-  loading(true);
+async function openBox(extra={}){
+  hideErr(); $("echo").style.display="none"; busy(true);
+  const p = params(extra); S.last = p;
   try{
-    const r = await fetch("/api/box?"+qs(p));
+    const r = await fetch("/api/box?" + new URLSearchParams(p));
     const d = await r.json();
-    if(!r.ok){ showErr(d.error||("请求失败 "+r.status)); return; }
-    renderResult(d);
-  }catch(e){ showErr("连不上本地服务："+e.message); }
-  finally{ loading(false); }
+    if(!r.ok){ showErr(d.error || ("请求失败 " + r.status)); return; }
+    render(d);
+  }catch(e){
+    showErr("连不上本地服务。请确认已运行 python server.py，并且当前页面地址是 http://127.0.0.1:8000（静态副本没有后端）。");
+  }finally{ busy(false); }
 }
+$("openBtn").addEventListener("click", ()=>openBox());
+$("randBtn").addEventListener("click", ()=>openBox({random:1}));
+$("budget").addEventListener("input", e=>{ S.budget = e.target.value.trim(); });
+$("text").addEventListener("input", e=>{ S.text = e.target.value.trim(); });
 
-document.getElementById("openBtn").addEventListener("click", ()=>openBox({}));
-document.getElementById("randBtn").addEventListener("click", ()=>openBox({random:1}));
-document.getElementById("budget").addEventListener("input", e=>{ S.budget=e.target.value.trim(); });
-document.getElementById("text").addEventListener("input", e=>{ S.text=e.target.value.trim(); });
-
-document.getElementById("parseBtn").addEventListener("click", async ()=>{
+$("parseBtn").addEventListener("click", async ()=>{
   hideErr();
-  const text=document.getElementById("text").value.trim();
-  if(!text){ showErr("先说一句，再点解析"); return; }
-  const r = await fetch("/api/parse?"+qs({text}));
+  const text = $("text").value.trim();
+  if(!text){ showErr("先跟管家说一句，再让我听听"); return; }
+  const r = await fetch("/api/parse?" + new URLSearchParams({text}));
   const d = await r.json();
-  if(!r.ok){ showErr(d.error||"解析失败"); return; }
-  const echo=document.getElementById("echo");
-  echo.style.display="block";
-  echo.innerHTML =
-    '<div class="e-title">我理解成这样，对吗？</div>' +
-    d.echo.map(([k,v])=>`<div class="e-row">${k}：${v||"—"}</div>`).join("") +
-    (d.unresolved.length?`<div class="e-row" style="color:#b26a00">（${d.unresolved[0]}）</div>`:"") +
-    '<div class="e-actions"><button class="mini go" id="goBtn">就这样，开盒</button>' +
-    '<button class="mini edit" id="editBtn">改一下</button></div>';
-  document.getElementById("goBtn").addEventListener("click", ()=>{
-    const f=d.fields;
-    S.state=f.state||S.state; S.feels=f.feel||S.feels; S.size=f.size||S.size;
-    S.budget=(f.budget_yuan!=null?f.budget_yuan:"");
-    S.excludes=f.exclude||S.excludes; S.text=text;
-    document.getElementById("budget").value=S.budget;
-    renderChips();
+  if(!r.ok){ showErr(d.error || "解析失败"); return; }
+  const box = $("echo"); box.style.display = "block";
+  box.innerHTML =
+    '<div class="et">管家听到的是这样，对吗？</div>' +
+    d.echo.map(([k,v])=>`<div class="er">${k}：${v || "—"}</div>`).join("") +
+    (d.unresolved.length ? `<div class="er" style="color:#9a5b00">（${d.unresolved[0]}）</div>` : "") +
+    '<div class="ea"><button class="ghost" id="goBtn" style="background:var(--red);color:#fff;border-color:var(--line)">就这样，开盒</button>' +
+    '<button class="ghost" id="editBtn">我再改改</button></div>';
+  $("goBtn").addEventListener("click", ()=>{
+    const f = d.fields;
+    if(f.state) S.state = f.state;
+    if(f.feel && f.feel.length) S.feels = f.feel;
+    if(f.size) S.size = f.size;
+    if(f.budget_yuan != null){ S.budget = f.budget_yuan; $("budget").value = f.budget_yuan; }
+    if(f.exclude && f.exclude.length) S.excludes = f.exclude;
+    S.text = text; paintChips();
     openBox({text});
   });
-  document.getElementById("editBtn").addEventListener("click", ()=>{
-    echo.style.display="none"; document.getElementById("text").focus();
-  });
+  $("editBtn").addEventListener("click", ()=>{ box.style.display="none"; $("text").focus(); });
 });
 
-function renderResult(d){
-  const res=document.getElementById("result");
-  res.style.display="block";
-  const meta=document.getElementById("meta");
-  const srcLabel = d.source==="snapshot" ? "离线快照（非实时）"
-                 : d.source==="cache" ? "10 分钟内的缓存" : "实时";
-  meta.textContent = `${d.store.storeName} · 候选 ${d.pool_size} 个 · ${srcLabel} · 抓取于 ${d.fetched_at} · seed ${d.seed}`;
+/* ------------------------------ 结果 ------------------------------ */
+const ROLE_CLS = { understand:"", safe:"r-safe", surprise:"r-sur" };
+function render(d){
+  const res = $("result");
+  const src = d.source === "snapshot" ? "离线快照（非实时）"
+            : d.source === "cache" ? "10 分钟内的缓存" : "实时";
+  $("meta").textContent = `${d.store.storeName} · 候选 ${d.pool_size} 份 · ${src} · 抓取于 ${d.fetched_at} · seed ${d.seed}`;
 
   if(!d.plans.length){
-    res.innerHTML = `<div class="card">这个条件下没有可选餐品。<br>${(d.notes||[]).join("<br>")}</div>`;
+    res.innerHTML = `<div class="px">这个条件下管家也没找到合适的，要不放宽一点？<br><small>${(d.notes||[]).join("；")}</small></div>`;
     return;
   }
-  res.innerHTML = d.plans.map(p=>{
-    const cls = p.role==="understand"?"r-under":p.role==="safe"?"r-safe":"r-sur";
-    const price = p.price_yuan!=null?`¥${p.price_yuan.toFixed(2)}`:"价格待确认";
+
+  res.innerHTML = d.plans.map((p, i)=>{
+    const cls = ROLE_CLS[p.role] || "";
+    const price = p.price_yuan != null ? `¥${p.price_yuan.toFixed(2)}` : "价格待确认";
+    const parts = (p.parts||[]).map(x=>`<div><span>${x.name}</span><span>¥${x.price_yuan.toFixed(2)}</span></div>`).join("");
     const tags = (p.matched||[]).map(t=>`<span class="tag">${t}</span>`).join("");
     const warns = (p.warnings||[]).map(w=>`<div class="warn">⚠ ${w}</div>`).join("");
-    return `<div class="card">
-      <span class="role ${cls}">${p.label}</span><span class="price">${price}</span>
-      <div class="name">${p.name}</div>
-      <div class="cat">${p.category}</div>
-      <div class="why">${p.reason}</div>
-      ${tags?`<div class="tags">${tags}</div>`:""}
-      ${warns}
+    return `<div class="card ${cls}">
+      <div class="bar"></div>
+      <div class="body">
+        <div class="top"><span class="role">${p.label}</span><span class="price">${price}</span></div>
+        <div class="name">${p.name}</div>
+        ${parts ? `<div class="parts">${parts}</div>` : ""}
+        <div class="cat">${p.category}</div>
+        <div class="why">${p.reason}</div>
+        ${tags ? `<div class="tags">${tags}</div>` : ""}
+        ${warns}
+      </div>
     </div>`;
-  }).join("")
-   + `<div class="actions"><button class="btn main" id="againBtn">再来一盒</button></div>`;
-  document.getElementById("againBtn").addEventListener("click", ()=> openBox({}));
-  window.scrollTo({top:document.getElementById("result").offsetTop-10, behavior:"smooth"});
+  }).join("") + `
+    <div class="actions"><button class="btn" id="againBtn">再来一盒</button></div>
+    <div class="px listen" style="margin-top:16px;">
+      <div class="q" style="margin-top:0;"><em>管家在听</em>哪里不合心意？<small>直接说，我改</small></div>
+      <div class="chips" style="margin-bottom:10px;">
+        <div class="chip" data-fix="cheap">有点贵</div>
+        <div class="chip" data-fix="noburger">不想吃汉堡</div>
+        <div class="chip" data-fix="hot">来点热的</div>
+        <div class="chip" data-fix="new">换个口味</div>
+      </div>
+      <div class="talkline">
+        <input type="text" id="fixText" placeholder="比如：太贵了 / 想吃鸡 / 不要冰的">
+        <button class="ghost" id="fixBtn">管家调整</button>
+      </div>
+    </div>`;
+
+  $("againBtn").addEventListener("click", ()=>openBox());
+  res.querySelectorAll("[data-fix]").forEach(el=>{
+    el.addEventListener("click", ()=>applyFix(el.dataset.fix, d));
+  });
+  $("fixBtn").addEventListener("click", async ()=>{
+    const t = $("fixText").value.trim();
+    if(!t) return;
+    const r = await fetch("/api/parse?" + new URLSearchParams({text:t}));
+    const p = await r.json();
+    if(r.ok){
+      const f = p.fields;
+      if(f.budget_yuan != null) S.budget = f.budget_yuan;
+      if(f.exclude && f.exclude.length) S.excludes = Array.from(new Set([...S.excludes, ...f.exclude]));
+      if(f.feel && f.feel.length) S.feels = f.feel;
+      if(f.state) S.state = f.state;
+      if(f.size) S.size = f.size;
+    }else if(/贵|便宜/.test(t)){
+      applyFix("cheap", d);
+      return;
+    }
+    paintChips(); openBox();
+  });
+  window.scrollTo({ top: $("result").offsetTop - 12, behavior:"smooth" });
 }
+
+function applyFix(kind, d){
+  const prices = (d.plans||[]).map(p=>p.price_yuan).filter(v=>v != null).sort((a,b)=>a-b);
+  if(kind === "cheap"){
+    const low = prices.length ? prices[0] : 30;
+    const cur = S.budget ? Number(S.budget) : null;
+    S.budget = Math.max(8, Math.floor((cur ? Math.min(cur, low) : low) * 0.85));
+    $("budget").value = S.budget;
+    $("bubble").textContent = `好，我把上限压到 ¥${S.budget} 再看看。`;
+  }else if(kind === "noburger"){
+    S.excludes = Array.from(new Set([...S.excludes, "堡"]));
+    $("bubble").textContent = "行，汉堡先放一边，给你换炸鸡和小食。";
+  }else if(kind === "hot"){
+    S.feels = ["热乎"]; S.excludes = Array.from(new Set([...S.excludes, "冰"]));
+    $("bubble").textContent = "热乎的，记下了。";
+  }else if(kind === "new"){
+    S.feels = ["想尝鲜"];
+    $("bubble").textContent = "那咱们试试没吃过的。";
+  }
+  paintChips(); openBox();
+}
+
+/* ------------------------------ 启动 ------------------------------ */
+initRain();
+requestAnimationFrame(tick);
+loadCatalog();
 </script>
 </body>
 </html>

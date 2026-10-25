@@ -25,6 +25,11 @@ def render_card(plan: Plan, idx: int | None = None) -> str:
     rows = [
         head,
         f"  {c.name}",
+    ]
+    if c.parts:
+        for n, price in c.parts:
+            rows.append(f"    · {n}  ¥{price:.2f}")
+    rows += [
         f"  分类：{c.category}",
         f"  为什么是它：{plan.reason}",
     ]
@@ -82,6 +87,7 @@ def render_json(box: Box, q: Query, cat: Catalog) -> dict:
                 "category": p.cand.category,
                 "price_yuan": p.cand.price_yuan,
                 "original_yuan": p.cand.original_yuan,
+                "parts": [{"name": n, "price_yuan": pr} for n, pr in p.cand.parts],
                 "tags": list(p.cand.tags),
                 "reason": p.reason,
                 "matched": p.matched,
