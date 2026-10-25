@@ -107,8 +107,10 @@ def build_meals(pool: list[Candidate], q) -> list[Candidate]:
     budget = q.budget_yuan
 
     if q.size == "垫一下":
+        # 垫一口也应该是"正经一点的东西"，别上来给一个圆筒
         light = [c for c in pool if c.size_band == "light"]
-        return light or pool
+        mains = [c for c in light if c.is_main]
+        return mains or light or pool
 
     side_pri = _pref_words(q, SIDE_PREF, SIDE_DEFAULT)
     drink_pri = _pref_words(q, DRINK_PREF, DRINK_DEFAULT)

@@ -161,6 +161,23 @@ Windows 用户也可以直接双击 **`start_web.cmd`**（会用本机 Python �
 | 热量口径 | 巨无霸四件套 1119 kcal（4/4 完整）；缺项时整行不显示 |
 | 默认门店 | 3350325 朝阳街（112 品 / 42 套餐，实测最全） |
 
+## 7.1 部署成公开链接（静态托管）
+
+Netlify / Vercel / GitHub Pages 这类**纯静态托管跑不了 `server.py`**，所以要发的是构建好的静态包：
+
+```bash
+python scripts/build_static.py
+# 产出 web/static/index.html + data.js（推荐数据已预计算，前端零请求）
+# 同时打包 web/static.zip（index.html 在压缩包根目录）
+```
+
+把 **`web/static.zip`** 拖到 Netlify 的 Deploys 页面（或拖 `web/static` 文件夹内容），即可访问。
+
+注意：
+- 压缩包里 `index.html` **必须在根目录**；如果多套了一层文件夹，Netlify 会显示 `Page not found`；
+- 静态版数据是构建时抓的快照（页脚会显示抓取时间），**不带任何 Token**，可以放心公开；
+- 静态版与本地版规则一致（三条规则、组合、明细、热量、随机），只是不能实时取数。
+
 ## 8. 关于"公开链接"
 
 比赛**不要求**在线可访问：官方只要求公开 GitHub 仓库 + Issue 报名，作品形态可以是"应用程序/工作流"。

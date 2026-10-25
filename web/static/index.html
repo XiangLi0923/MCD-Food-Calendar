@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>麦麦食历 · 选餐魔盒</title>
+<style>
+  :root{
+    --paper:#FFF6E5; --paper2:#FFEFD2; --ink:#2A1B12; --ink2:#5b4632;
+    --red:#D62300; --red2:#A81B00; --yellow:#FFC72C; --purple:#7A4FA3;
+    --line:#2A1B12; --shadow:rgba(42,27,18,.35);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--paper); color:var(--ink); line-height:1.65;
+    font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+    image-rendering:pixelated; overflow-x:hidden;}
+  body::before{content:""; position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.5;
+    background-image:radial-gradient(rgba(42,27,18,.10) 1px, transparent 1px); background-size:8px 8px;}
+  #rain{position:fixed; inset:0; z-index:1; pointer-events:none; opacity:.5;}
+  .wrap{position:relative; z-index:2; max-width:1180px; margin:0 auto; padding:16px 16px 70px;}
+  .layout{display:grid; grid-template-columns:400px minmax(0,1fr); gap:18px; align-items:start; margin-top:12px;}
+  .left{position:sticky; top:12px;} .right{min-width:0;}
+  @media (max-width:980px){ .layout{grid-template-columns:1fr;} .left{position:static;} .wrap{max-width:720px;} }
+  .px{background:var(--paper2); border:4px solid var(--line);
+      box-shadow:6px 6px 0 var(--shadow), inset 0 0 0 3px #fff8ea; padding:16px;}
+  .px + .px{margin-top:12px;}
+  header{text-align:center; padding:10px 0 4px;}
+  h1{font-size:26px; letter-spacing:5px; color:var(--red); font-weight:900;
+     text-shadow:3px 3px 0 var(--yellow), 6px 6px 0 var(--shadow);}
+  .h1sub{display:inline-block; margin-top:8px; padding:3px 12px; background:var(--ink);
+     color:var(--yellow); font-size:12px; letter-spacing:3px;}
+  .tagline{margin-top:6px; font-size:13.5px; color:var(--ink2);} .tagline b{color:var(--red);}
+  .marquee{margin:8px 0 2px; border-top:3px dashed var(--line); border-bottom:3px dashed var(--line);
+     padding:6px 0; overflow:hidden; white-space:nowrap; background:rgba(255,255,255,.45);}
+  .marquee span{display:inline-block; animation:scroll 40s linear infinite; font-size:12.5px; color:var(--ink2);}
+  .marquee i{font-style:normal; margin:0 14px; opacity:.55;}
+  @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  .butler{display:flex; gap:12px; align-items:flex-start;}
+  .avatar{width:42px; height:42px; flex:0 0 42px; display:grid; place-items:center; font-size:21px;
+     background:var(--yellow); border:4px solid var(--line); box-shadow:4px 4px 0 var(--shadow);}
+  .bubble{position:relative; flex:1; background:#fff; border:4px solid var(--line);
+     padding:10px 14px; font-size:14px; box-shadow:4px 4px 0 var(--shadow);}
+  .q{font-size:14.5px; font-weight:800; margin:12px 0 8px; display:flex; align-items:center; gap:8px;}
+  .q em{font-style:normal; background:var(--red); color:#fff; font-size:11px; padding:1px 7px;
+     border:2px solid var(--line); letter-spacing:1px;}
+  .q small{font-weight:400; color:var(--ink2); font-size:12px;}
+  .chips{display:flex; flex-wrap:wrap; gap:10px;}
+  .chip{background:#fff; border:3px solid var(--line); padding:8px 14px; font-size:14px; cursor:pointer;
+     user-select:none; box-shadow:4px 4px 0 var(--shadow); transition:transform .06s linear, box-shadow .06s linear;}
+  .chip:active{transform:translate(3px,3px); box-shadow:1px 1px 0 var(--shadow);}
+  .chip.on{background:var(--red); color:#fff; box-shadow:4px 4px 0 var(--red2);}
+  .more{margin-top:14px;}
+  .more summary{cursor:pointer; font-size:13.5px; color:var(--ink2); padding:6px 0;
+     border-bottom:3px dotted var(--line); user-select:none;}
+  .row{display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:12px;}
+  .row label{font-size:13.5px; color:var(--ink2);}
+  input[type=number],input[type=text]{border:3px solid var(--line); background:#fff; padding:9px 11px;
+     font-size:14px; box-shadow:inset 2px 2px 0 rgba(42,27,18,.08);}
+  input[type=number]{width:120px;} input[type=text]{flex:1; min-width:0;}
+  input:focus{outline:3px solid var(--yellow); outline-offset:1px;}
+  .talk{margin-top:16px;} .talkline{display:flex; gap:10px; margin-top:8px;}
+  .actions{display:flex; gap:12px; margin-top:14px;}
+  .btn{flex:1; border:4px solid var(--line); background:var(--red); color:#fff; font-size:17px;
+     font-weight:900; letter-spacing:4px; padding:13px 0; cursor:pointer; box-shadow:6px 6px 0 var(--shadow);
+     transition:transform .06s linear, box-shadow .06s linear;}
+  .btn.rand{background:var(--yellow); color:var(--ink); letter-spacing:2px; font-size:16px;}
+  .btn:active{transform:translate(4px,4px); box-shadow:2px 2px 0 var(--shadow);}
+  .ghost{border:3px solid var(--line); background:#fff; padding:10px 14px; font-size:14px; cursor:pointer;
+     box-shadow:4px 4px 0 var(--shadow);}
+  #echo{display:none; margin-top:16px; background:#FFF8E1; border:3px solid var(--line); padding:12px;
+     box-shadow:4px 4px 0 var(--shadow);}
+  #echo .et{font-weight:800; margin-bottom:6px;} #echo .er{font-size:13.5px; color:var(--ink2);}
+  #echo .ea{display:flex; gap:10px; margin-top:10px;}
+  #err{display:none; margin-top:14px; background:#FFE8E5; border:3px solid var(--red);
+     color:var(--red2); padding:10px 12px; font-size:13.5px;}
+  #meta{font-size:12px; color:var(--ink2); text-align:center; margin:14px 0 6px;}
+  .card{background:#fff; border:4px solid var(--line); box-shadow:6px 6px 0 var(--shadow); margin-bottom:16px;}
+  .card .bar{height:10px; background:var(--red); border-bottom:4px solid var(--line);}
+  .card.r-safe .bar{background:#E08A00;} .card.r-sur .bar{background:var(--purple);}
+  .card .body{padding:14px;}
+  .top{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;}
+  .role{background:var(--red); color:#fff; font-size:12px; letter-spacing:2px; padding:2px 8px; border:2px solid var(--line);}
+  .r-safe .role{background:#E08A00;} .r-sur .role{background:var(--purple);}
+  .price{font-size:26px; font-weight:900;}
+  .name{font-size:16px; font-weight:800; margin-top:8px;}
+  .parts{margin-top:8px; border-left:4px solid var(--yellow); padding-left:10px;}
+  .prow{display:grid; grid-template-columns:1fr auto auto; gap:10px; align-items:baseline;
+        font-size:12.5px; color:var(--ink2); padding:3px 0; border-bottom:1px dashed #e6d9c2;}
+  .prow:last-child{border-bottom:none;} .prow .pn{color:var(--ink);}
+  .prow .pk{min-width:62px; text-align:right; color:#8a7358;}
+  .nutline{margin-top:8px; font-size:13px; background:#FFF3D6; border:2px solid var(--line);
+     padding:4px 8px; display:inline-block;} .nutline b{color:var(--red);}
+  .saveline{margin-top:6px; font-size:12.5px; color:#7a5c33;}
+  .cat{font-size:12px; color:var(--ink2); margin-top:6px;}
+  .why{margin-top:8px; font-size:14px;}
+  .tags{margin-top:8px; display:flex; flex-wrap:wrap; gap:6px;}
+  .tag{font-size:11.5px; background:var(--paper2); border:2px solid var(--line); padding:1px 7px;}
+  .warn{margin-top:6px; font-size:12.5px; color:#9a5b00;}
+  .imgrow{display:flex; justify-content:flex-end; margin-top:10px;}
+  .piximg{width:92px; height:92px; object-fit:contain; padding:6px; background:#fff;
+     border:4px solid var(--line); box-shadow:4px 4px 0 var(--shadow); image-rendering:pixelated;}
+  .orderrow{margin-top:12px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
+  .order{display:inline-block; text-decoration:none; background:var(--yellow); color:var(--ink);
+     border:3px solid var(--line); padding:7px 14px; font-size:13.5px; font-weight:800; box-shadow:4px 4px 0 var(--shadow);}
+  .orderhint{font-size:11.5px; color:var(--ink2);}
+  footer{margin-top:26px; text-align:center; font-size:11.5px; color:var(--ink2); line-height:1.9;}
+  footer b{color:var(--red);}
+  @media (max-width:520px){ h1{font-size:22px;} .actions{flex-direction:column;} .avatar{display:none;} }
+  @media (prefers-reduced-motion: reduce){ .marquee span{animation:none;} #rain{display:none;} }
+</style>
+</head>
+<body>
+<canvas id="rain"></canvas>
+<div class="wrap">
+  <header>
+    <h1>麦麦食历</h1>
+    <div><span class="h1sub">MCD FOOD CALENDAR · 静态演示版</span></div>
+    <div class="tagline">今天吃什么，让管家替你<b>少想一步</b>。</div>
+  </header>
+  <div class="marquee"><span id="marquee"></span></div>
+
+  <div class="layout">
+  <aside class="left">
+    <div class="px">
+      <div class="butler">
+        <div class="avatar">🍔</div>
+        <div class="bubble" id="bubble">你好呀，我是麦麦管家。今天过得怎么样？不想说的话，直接按「开盒」也行。</div>
+      </div>
+
+      <div class="q"><em>01</em>今天过得怎么样？<small>不选也没关系</small></div>
+      <div class="chips" id="c-state">
+        <div class="chip" data-k="state" data-v="累了">累瘫了</div>
+        <div class="chip" data-k="state" data-v="心情不错">美滋滋</div>
+        <div class="chip" data-k="state" data-v="有点低落">有点丧</div>
+        <div class="chip" data-k="state" data-v="想奖励自己">想犒劳自己</div>
+        <div class="chip" data-k="state" data-v="就想简单解决">速战速决</div>
+      </div>
+
+      <div class="q"><em>02</em>嘴巴想吃什么感觉的？<small>最多挑两个</small></div>
+      <div class="chips" id="c-feel">
+        <div class="chip" data-k="feel" data-v="满足">吃爽的</div>
+        <div class="chip" data-k="feel" data-v="热乎">热乎乎的</div>
+        <div class="chip" data-k="feel" data-v="清爽">清爽一点</div>
+        <div class="chip" data-k="feel" data-v="甜一点">来点甜的</div>
+        <div class="chip" data-k="feel" data-v="想尝鲜">尝个新鲜</div>
+      </div>
+
+      <div class="q"><em>03</em>现在饿到什么程度？<small>决定给你配几样</small></div>
+      <div class="chips" id="c-size">
+        <div class="chip" data-k="size" data-v="垫一下">垫一口</div>
+        <div class="chip" data-k="size" data-v="正常">正常一餐</div>
+        <div class="chip" data-k="size" data-v="很饿">饿坏了</div>
+      </div>
+
+      <details class="more">
+        <summary>再交代两句（预算 / 不吃什么）</summary>
+        <div class="row"><label>最多花多少</label>
+          <input type="number" id="budget" min="1" max="300" step="1" placeholder="不填＝不设限"><label>元以内</label></div>
+        <div class="row"><label>不吃</label>
+          <div class="chips" id="c-exclude">
+            <div class="chip" data-k="exclude" data-v="牛肉">牛肉</div>
+            <div class="chip" data-k="exclude" data-v="辣">辣</div>
+            <div class="chip" data-k="exclude" data-v="冰">冰的</div>
+            <div class="chip" data-k="exclude" data-v="咖啡">咖啡</div>
+            <div class="chip" data-k="exclude" data-v="猪肉">猪肉</div>
+            <div class="chip" data-k="exclude" data-v="鱼">鱼</div>
+          </div></div>
+      </details>
+
+      <div class="talk">
+        <div class="q"><em>或者</em>直接跟管家说<small>说人话就行</small></div>
+        <div class="talkline">
+          <input type="text" id="text" placeholder="今天开完运动会，想吃顿饱的，别超过 35">
+          <button class="ghost" id="parseBtn">管家听听</button>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn" id="openBtn">开 盒</button>
+        <button class="btn rand" id="randBtn">管家随便来</button>
+      </div>
+      <div id="echo"></div>
+      <div id="err"></div>
+    </div>
+  </aside>
+
+  <section class="right">
+    <div id="meta"></div>
+    <div id="result"></div>
+  </section>
+  </div>
+
+  <footer>
+    静态演示版：数据为 <b id="fetchedAt">—</b> 抓取的门店快照，价格与供应以门店实际为准<br>
+    数据来自麦当劳官方 MCP · 忌口按名称匹配，<b>过敏请向门店核实</b> · 本工具只负责「选」，下单请去官方渠道
+  </footer>
+</div>
+
+<script src="data.js"></script>
+<script>
+const D = window.MCD_DATA;
+const S = {state:null, feels:[], size:null, excludes:[], text:"", budget:"", last:null};
+
+/* ---------- 词表（对应 Python 侧 recommend/entry 的规则表） ---------- */
+const STATE_WORDS = {
+  "累了":["堡","卷","鸡块","派","薯条"],
+  "心情不错":["三件套","四件套","麦旋风","新地","拿铁","咖啡"],
+  "有点低落":["堡","粥","热","奶","咖啡","红茶"],
+  "想奖励自己":["安格斯","厚牛","双层","四件套","限定","联名"],
+  "就想简单解决":["随心配","三件套","圆筒","派"]
+};
+const FEEL_WORDS = {
+  "满足":["堡","牛","鸡","薯条","鸡块","安格斯","炸","脆"],
+  "热乎":["热","咖","奶","粥","堡","红茶"],
+  "清爽":["玉米","苹果","柠檬","茶","脆薯"],
+  "甜一点":["冰淇淋","新地","麦旋风","派","朱古力","甜","橙"],
+  "想尝鲜":["上新","限定","联名","限量"]
+};
+const EXCL = {
+  "牛肉":["牛肉","牛堡","安格斯","巨无霸","双层牛","不素之霸"],
+  "辣":["辣","龙焰","韩式"], "冰":["冰","雪冰"],
+  "咖啡":["咖啡","拿铁","美式","玛奇朵","卡布"], "猪肉":["猪柳","火腿","培根","猪"],
+  "鱼":["鱼","鳕"]
+};
+const P_STATE = {"累了":["累","疲","加班","困","运动会","跑","上课","上班","忙","周一","开学","训练"],
+  "心情不错":["开心","高兴","美滋滋","爽"], "有点低落":["低落","郁闷","烦","搞砸","难受","丧","压力"],
+  "想奖励自己":["奖励","犒劳","加油","庆功","犒赏"], "就想简单解决":["随便","简单","省事","速战速决","将就"]};
+const P_FEEL = {"满足":["满足","饱","扎实","解馋","吃饱","放纵","吃爽","管饱"],
+  "热乎":["热乎","热的","暖","汤"], "清爽":["清爽","清淡","不油","减脂","刷脂","低卡","轻食"],
+  "甜一点":["甜","甜品"], "想尝鲜":["尝鲜","新的","没吃过"]};
+const P_SIZE = {"垫一下":["垫一下","不饿","少吃","小份","垫垫"], "很饿":["很饿","饿死","特别饿","大份","饿坏","运动完"], "正常":["正常","一般","普通"]};
+
+const SIZE_KEY = {"垫一下":"light","正常":"normal","很饿":"hungry", null:"normal"};
+const $ = id => document.getElementById(id);
+const esc = s => (s||"").replace(/[<>&]/g, c=>({"<":"&lt;",">":"&gt;","&":"&amp;"}[c]));
+
+/* ---------- 背景流星雨（真实菜单名） ---------- */
+const menuNames = Object.values(D.menus).flat().map(m=>m.name).filter(Boolean);
+const words = Array.from(new Set(menuNames)).slice(0, 90);
+const EMOJI = ["🍔","🍟","🍗","🥤","🍦","🥧","🍎","🥛","☕","🍪","🧀"];
+const cv = $("rain"), ctx = cv.getContext("2d");
+let drops = [];
+function sizeCanvas(){
+  const dpr = Math.min(devicePixelRatio||1, 2);
+  cv.width = innerWidth*dpr; cv.height = innerHeight*dpr;
+  cv.style.width = innerWidth+"px"; cv.style.height = innerHeight+"px";
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+function newDrop(init){
+  const isWord = words.length && Math.random() < .35;
+  return {x:Math.random()*innerWidth, y:init?Math.random()*innerHeight:-40,
+    vy:.55+Math.random()*1.1, vx:(Math.random()-.5)*.25, rot:(Math.random()-.5)*.5,
+    vr:(Math.random()-.5)*.01, size:isWord?11+Math.random()*3:16+Math.random()*14,
+    text:isWord?words[(Math.random()*words.length)|0]:EMOJI[(Math.random()*EMOJI.length)|0],
+    isWord, alpha:.28+Math.random()*.35};
+}
+function initRain(){
+  sizeCanvas();
+  drops = Array.from({length: innerWidth<520?16:30}, ()=>newDrop(true));
+}
+function tick(){
+  ctx.clearRect(0,0,innerWidth,innerHeight);
+  for(const d of drops){
+    d.x+=d.vx; d.y+=d.vy; d.rot+=d.vr;
+    if(d.y>innerHeight+40) Object.assign(d, newDrop(false));
+    ctx.save(); ctx.globalAlpha=d.alpha; ctx.translate(d.x,d.y); ctx.rotate(d.rot);
+    if(d.isWord){
+      ctx.font=`${d.size}px "Microsoft YaHei",sans-serif`;
+      const w=ctx.measureText(d.text).width;
+      ctx.fillStyle="rgba(255,255,255,.75)"; ctx.fillRect(-w/2-3,-d.size,w+6,d.size+6);
+      ctx.fillStyle="#5b4632"; ctx.textAlign="center"; ctx.fillText(d.text,0,1);
+    }else{
+      ctx.font=`${d.size}px serif`; ctx.textAlign="center"; ctx.fillText(d.text,0,0);
+    }
+    ctx.restore();
+  }
+  requestAnimationFrame(tick);
+}
+
+/* ---------- 推荐规则（Python 侧三条规则的前端等价实现） ---------- */
+const hits = (m, ws) => ws.some(w => (m.name + " " + (m.cat||"")).includes(w));
+function pool(){
+  const list = D.menus[SIZE_KEY[S.size]] || D.menus.normal;
+  const budget = S.budget ? Number(S.budget) : null;
+  const exWords = S.excludes.flatMap(k => EXCL[k] || [k]);
+  let out = list.filter(m => {
+    if (budget && m.price > budget + 0.01) return false;
+    const text = m.name + " " + (m.cat||"") + " " + (m.parts||[]).map(p=>p.name).join(" ");
+    return !exWords.some(w => text.includes(w));
+  });
+  return out;
+}
+function median(arr){
+  const p = arr.map(m=>m.price).sort((a,b)=>a-b);
+  return p.length ? p[Math.floor(p.length/2)] : 0;
+}
+function scoreUnderstand(m){
+  let s = 0, matched = [];
+  if (S.state && hits(m, STATE_WORDS[S.state]||[])) { s += 3; matched.push(S.state); }
+  S.feels.forEach(f=>{ if (hits(m, FEEL_WORDS[f]||[])) { s += 2; matched.push(f); } });
+  if (m.set) s += .8; if (m.pop) s += .6; if (!m.set) s += .4;
+  if (S.feels.includes("想尝鲜") && m.new) s += 1;
+  return {s, matched};
+}
+function pick(list, taken){
+  if (!list.length) return null;
+  const med = median(list);
+  const avail = list.filter(m => !taken.has(m.main));
+  if (!avail.length) return null;
+  const u = avail.map(m => ({m, ...scoreUnderstand(m)})).sort((a,b)=> b.s - a.s);
+  return {u: u[0], med, avail};
+}
+function openBox(isRandom){
+  const list = pool();
+  if (!list.length) { render([], "这个条件下没找到合适的，放宽一点试试？"); return; }
+  const med = median(list);
+  const plans = [];
+  const taken = new Set();
+  if (isRandom){
+    const shuffled = list.slice().sort(()=>Math.random()-.5);
+    for (const m of shuffled){ if (taken.has(m.main)) continue; taken.add(m.main);
+      plans.push({role:"random", label:`随机 ${plans.length+1}`, m, reason:`在你的限制里随手抽到的：¥${m.price.toFixed(2)}。`});
+      if (plans.length===3) break; }
+  } else {
+    // 懂你
+    const u = list.map(m=>({m, ...scoreUnderstand(m)})).sort((a,b)=>b.s-a.s)[0];
+    taken.add(u.m.main);
+    plans.push({role:"understand", label:"懂你款", m:u.m,
+      reason: reasonUnderstand(u.m, u.matched), matched: u.matched});
+
+    // 稳妥：套餐完整、非新品、价格在中位以下
+    const safeTier = list.filter(m=>!taken.has(m.main));
+    const prefer = safeTier.filter(m=>m.set && !m.new && m.price<=med);
+    const base = (prefer.length?prefer:safeTier.filter(m=>m.set).length?safeTier.filter(m=>m.set):safeTier)
+      .slice().sort((a,b)=>Math.abs(a.price-med)-Math.abs(b.price-med));
+    if (base[0]) { taken.add(base[0].main);
+      plans.push({role:"safe", label:"稳妥款", m:base[0], reason: reasonSafe(base[0], med)}); }
+
+    // 惊喜：换品类、上新、价格在中位以上
+    const surTier = list.filter(m=>!taken.has(m.main));
+    const diff = surTier.filter(m=>m.cat !== u.m.cat);
+    const surprise = (diff.length?diff:surTier).slice().sort((a,b)=>
+      (b.new-a.new) || ((b.price>=med)-(a.price>=med)) || (b.price-a.price));
+    if (surprise[0]) { taken.add(surprise[0].main);
+      plans.push({role:"surprise", label:"惊喜款", m:surprise[0],
+        reason: reasonSurprise(surprise[0], u.m, med)}); }
+  }
+  const cats = new Set(plans.map(p=>p.m.cat));
+  if (plans.length>=2 && cats.size===1) plans.forEach(p=>p.warn="三者同类，因可选范围有限");
+  render(plans, null, med, list.length);
+}
+function reasonUnderstand(m, matched){
+  const bits = [];
+  if (S.state) bits.push(`你说「${S.state}」`);
+  if (matched && matched.length) bits.push(`对上「${Array.from(new Set(matched)).join("、")}」`);
+  if (m.parts && m.parts.length>1) bits.push(`给你配齐了这顿：${m.parts.map(p=>p.name).join(" + ")}`);
+  else if (m.set) bits.push("搭配是现成的");
+  if (S.budget && m.price<=Number(S.budget)) bits.push(`¥${m.price.toFixed(2)}，还在你预算内`);
+  else bits.push(`¥${m.price.toFixed(2)}`);
+  return bits.join("；") + "。";
+}
+function reasonSafe(m, med){
+  const bits = [m.set ? "主食和小食都配好了，选它不用再挑" : "搭配是现成的，选它不用再挑"];
+  bits.push(m.price<=med ? `¥${m.price.toFixed(2)}，在这次候选里属于中位以下` : `¥${m.price.toFixed(2)}`);
+  if (!m.new) bits.push("不是这波新品，口味比较稳");
+  return bits.join("；") + "。";
+}
+function reasonSurprise(m, ref, med){
+  const bits = [];
+  if (m.new) bits.push("这是这波上新/限定的");
+  if (ref && m.cat !== ref.cat) bits.push(`跟你前面那款不是一个品类（${m.cat}）`);
+  if (S.feels.length && !hits(m, S.feels.flatMap(f=>FEEL_WORDS[f]||[]))) bits.push("你这次没提这类，正好换个口味");
+  if (!bits.length) bits.push("换个你没点过的");
+  bits.push(`¥${m.price.toFixed(2)}`);
+  return bits.join("；") + "。";
+}
+
+/* ---------- 渲染 ---------- */
+const ROLE_CLS = {understand:"", safe:"r-safe", surprise:"r-sur", random:"r-sur"};
+function render(plans, emptyMsg, med, count){
+  const res = $("result");
+  $("meta").textContent = count
+    ? `${D.store.name} · 候选 ${count} 份 · 离线快照（${D.fetched_at}）· 构建于 ${D.built_at}`
+    : `${D.store.name} · 离线快照（${D.fetched_at}）`;
+  if (!plans.length){
+    res.innerHTML = `<div class="px">${esc(emptyMsg||"这个条件下没有可选餐品。")}</div>`;
+    return;
+  }
+  res.innerHTML = plans.map(p=>{
+    const m = p.m, cls = ROLE_CLS[p.role] || "";
+    const price = `¥${m.price.toFixed(2)}`;
+    const parts = (m.parts||[]).map(x=>{
+      const pr = x.price!=null ? `¥${x.price.toFixed(2)}` : "并入套餐";
+      const kc = x.kcal!=null ? `${x.kcal} kcal` : "";
+      return `<div class="prow"><span class="pn">${esc(x.name)}</span><span class="pp">${pr}</span><span class="pk">${kc}</span></div>`;
+    }).join("");
+    const nut = (m.complete && m.kcal!=null)
+      ? `<div><span class="nutline">热量合计 <b>约 ${m.kcal} kcal</b>${m.protein!=null?` · 蛋白 ${m.protein}g`:""}</span></div>`
+      : "";
+    const save = m.was ? `<div class="saveline">原价 ¥${m.was.toFixed(2)} · 省 ¥${(m.was-m.price).toFixed(2)}</div>` : "";
+    const tags = (p.matched||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join("");
+    const warn = p.warn ? `<div class="warn">⚠ ${esc(p.warn)}</div>` : "";
+    const img = m.img ? `<div class="imgrow"><img class="piximg" src="${m.img}" alt="" loading="lazy"
+        referrerpolicy="no-referrer" onerror="this.parentNode.style.display='none'"></div>` : "";
+    return `<div class="card ${cls}"><div class="bar"></div><div class="body">
+      <div class="top"><span class="role">${p.label}</span><span class="price">${price}</span></div>
+      <div class="name">${esc(m.name)}</div>
+      ${parts?`<div class="parts">${parts}</div>`:""}
+      ${nut}${save}
+      <div class="cat">${esc(m.cat)}</div>
+      <div class="why">${esc(p.reason)}</div>
+      ${tags?`<div class="tags">${tags}</div>`:""}
+      ${warn}${img}
+      <div class="orderrow">
+        <a class="order" href="https://www.mcdonalds.com.cn/" target="_blank" rel="noopener">去官方下单</a>
+        <span class="orderhint">本工具只负责选，付款与下单在麦当劳官方渠道</span>
+      </div>
+    </div></div>`;
+  }).join("") + `<div class="actions"><button class="btn" id="againBtn">再来一盒</button></div>`;
+  $("againBtn").addEventListener("click", ()=>openBox(false));
+  window.scrollTo({top: $("result").offsetTop - 12, behavior:"smooth"});
+}
+
+/* ---------- 交互 ---------- */
+document.querySelectorAll(".chip").forEach(el=>{
+  el.addEventListener("click", ()=>{
+    const k = el.dataset.k, v = el.dataset.v;
+    if (k==="state"||k==="size") S[k] = (S[k]===v?null:v);
+    else {
+      const arr = k==="feel" ? S.feels : S.excludes;
+      const i = arr.indexOf(v);
+      if (i>=0) arr.splice(i,1);
+      else { if (k==="feel" && arr.length>=2) { $("err").style.display="block";
+             $("err").textContent="嘴巴一次说两个就够啦，先挑最想的那个"; return; } arr.push(v); }
+    }
+    $("err").style.display="none";
+    document.querySelectorAll(".chip").forEach(c=>{
+      const kk=c.dataset.k, vv=c.dataset.v;
+      const on = (kk==="state"||kk==="size") ? S[kk]===vv
+               : (kk==="feel"?S.feels:S.excludes).includes(vv);
+      c.classList.toggle("on", on);
+    });
+  });
+});
+$("openBtn").addEventListener("click", ()=>openBox(false));
+$("randBtn").addEventListener("click", ()=>openBox(true));
+$("budget").addEventListener("input", e=>{ S.budget = e.target.value.trim(); });
+$("text").addEventListener("input", e=>{ S.text = e.target.value.trim(); });
+
+function parseText(t){
+  const budget = (()=>{
+    let m = t.match(/(\d+(?:\.\d+)?)\s*(?:元|块)?\s*(?:以内|以下|之内)/) ||
+            t.match(/(?:不超过|别超过|不要超过|最多|顶多|预算)\s*(\d+(?:\.\d+)?)/) ||
+            t.match(/(\d+(?:\.\d+)?)\s*(?:元|块)/);
+    return m ? Number(m[1]) : null;
+  })();
+  const feels = Object.keys(P_FEEL).filter(k=>P_FEEL[k].some(w=>t.includes(w))).slice(0,2);
+  const state = Object.keys(P_STATE).find(k=>P_STATE[k].some(w=>t.includes(w))) || null;
+  const size = Object.keys(P_SIZE).find(k=>P_SIZE[k].some(w=>t.includes(w))) || null;
+  const exclude = Object.keys(EXCL).filter(k=>EXCL[k].some(w=>t.includes(w)));
+  return {budget, feels, state, size, exclude};
+}
+$("parseBtn").addEventListener("click", ()=>{
+  const t = $("text").value.trim();
+  const box = $("echo");
+  if (!t){ $("err").style.display="block"; $("err").textContent="先跟管家说一句，再让我听听"; return; }
+  $("err").style.display="none";
+  const p = parseText(t);
+  const hit = [p.budget!=null, p.feels.length, p.state, p.size, p.exclude.length].filter(Boolean).length;
+  box.style.display="block";
+  box.innerHTML =
+    `<div class="et">管家听到的是这样，对吗？</div>
+     <div class="er">预算：${p.budget!=null?`≤ ¥${p.budget}`:"—"}</div>
+     <div class="er">不要：${p.exclude.length?p.exclude.join("、"):"—"}</div>
+     <div class="er">想要：${p.feels.length?p.feels.join("、"):"—"}</div>
+     <div class="er">状态：${p.state||"—"}</div>
+     <div class="er">份量：${p.size||"—"}</div>
+     ${hit? "":`<div class="er" style="color:#9a5b00">（这句我还没听明白具体想吃什么～点标签也行）</div>`}
+     <div class="ea"><button class="ghost" id="goBtn" style="background:var(--red);color:#fff">就这样，开盒</button>
+     <button class="ghost" id="editBtn">我再改改</button></div>`;
+  $("goBtn").addEventListener("click", ()=>{
+    if (p.budget!=null){ S.budget = p.budget; $("budget").value = p.budget; }
+    if (p.feels.length) S.feels = p.feels;
+    if (p.state) S.state = p.state;
+    if (p.size) S.size = p.size;
+    if (p.exclude.length) S.excludes = p.exclude;
+    document.querySelectorAll(".chip").forEach(c=>{
+      const kk=c.dataset.k, vv=c.dataset.v;
+      const on = (kk==="state"||kk==="size") ? S[kk]===vv
+               : (kk==="feel"?S.feels:S.excludes).includes(vv);
+      c.classList.toggle("on", on);
+    });
+    box.style.display="none";
+    openBox(false);
+  });
+  $("editBtn").addEventListener("click", ()=>{ box.style.display="none"; $("text").focus(); });
+});
+
+/* ---------- 启动 ---------- */
+initRain(); requestAnimationFrame(tick);
+$("fetchedAt").textContent = D.fetched_at;
+$("marquee").innerHTML = words.slice(0,26).map(w=>`<i>·</i>${esc(w)}`).join("")
+                      + words.slice(0,26).map(w=>`<i>·</i>${esc(w)}`).join("");
+$("bubble").textContent = `这家店今天有 ${D.stats.total} 样餐品、${D.stats.categories} 个品类。`
+  + `你说说今天怎么样，我替你砍到三份——不用你翻菜单。`;
+</script>
+</body>
+</html>
