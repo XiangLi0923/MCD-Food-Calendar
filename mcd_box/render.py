@@ -36,8 +36,9 @@ def render_card(plan: Plan, idx: int | None = None) -> str:
                 price = f"单点 ¥{it['single_price_yuan']:.2f}"
             else:
                 price = "价格并入套餐"
-            kcal = f"{it['kcal']} kcal" if it.get("kcal") is not None else "热量未知"
-            rows.append(f"    · {it['name']}  {price}  {kcal}")
+            # 热量未知就不显示，不写"热量未知"占位
+            kcal = f"  {it['kcal']} kcal" if it.get("kcal") is not None else ""
+            rows.append(f"    · {it['name']}  {price}{kcal}")
     elif not meta.get("parts_known", True):
         rows.append("    · （套餐子项未展开，含什么以门店为准）")
 
@@ -47,10 +48,6 @@ def render_card(plan: Plan, idx: int | None = None) -> str:
     nut = meta.get("nutrition") or {}
     if nut.get("complete"):
         rows.append(f"  热量合计：约 {nut['kcal']} kcal · 蛋白 {nut.get('protein_g')}g")
-    elif nut.get("matched"):
-        rows.append(f"  热量：已查到 {nut['matched']}/{nut.get('total')} 项，合计约 {nut['kcal']} kcal（其余未知）")
-    elif parts:
-        rows.append("  热量：暂无（子项匹配不到营养表）")
     price_meta = meta.get("price") or {}
     if price_meta.get("was"):
         rows.append(f"  价格：¥{price_meta['now']:.2f}（原价 ¥{price_meta['was']:.2f}，省 ¥{price_meta['save']:.2f}）")

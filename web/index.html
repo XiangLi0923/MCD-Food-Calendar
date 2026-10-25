@@ -27,7 +27,16 @@
   }
   #rain{position:fixed; inset:0; z-index:1; pointer-events:none; opacity:.55;}
 
-  .wrap{position:relative; z-index:2; max-width:720px; margin:0 auto; padding:18px 14px 80px;}
+  .wrap{position:relative; z-index:2; max-width:1180px; margin:0 auto; padding:16px 16px 70px;}
+  /* 左右两栏：左边输入、右边结果，一屏完成 */
+  .layout{display:grid; grid-template-columns:400px minmax(0,1fr); gap:18px; align-items:start; margin-top:12px;}
+  .left{position:sticky; top:12px;}
+  .right{min-width:0;}
+  @media (max-width:980px){
+    .layout{grid-template-columns:1fr;}
+    .left{position:static;}
+    .wrap{max-width:720px;}
+  }
 
   /* 像素面板 */
   .px{
@@ -36,11 +45,11 @@
     box-shadow:6px 6px 0 var(--shadow), inset 0 0 0 3px #fff8ea;
     padding:16px;
   }
-  .px + .px{margin-top:16px;}
+  .px + .px{margin-top:12px;}
 
-  header{text-align:center; padding:20px 0 6px;}
+  header{text-align:center; padding:10px 0 4px;}
   h1{
-    font-size:32px; letter-spacing:6px; color:var(--red);
+    font-size:26px; letter-spacing:5px; color:var(--red);
     text-shadow:3px 3px 0 var(--yellow), 6px 6px 0 var(--shadow);
     font-weight:900;
   }
@@ -48,12 +57,12 @@
     display:inline-block; margin-top:10px; padding:3px 12px;
     background:var(--ink); color:var(--yellow); font-size:12px; letter-spacing:3px;
   }
-  .tagline{margin-top:10px; font-size:15px; color:var(--ink2);}
+  .tagline{margin-top:6px; font-size:13.5px; color:var(--ink2);}
   .tagline b{color:var(--red);}
 
   /* 跑马灯：真实菜单词 */
   .marquee{
-    margin:14px 0 4px; border-top:3px dashed var(--line); border-bottom:3px dashed var(--line);
+    margin:8px 0 2px; border-top:3px dashed var(--line); border-bottom:3px dashed var(--line);
     padding:6px 0; overflow:hidden; white-space:nowrap; background:rgba(255,255,255,.45);
   }
   .marquee span{display:inline-block; animation:scroll 38s linear infinite; font-size:12.5px; color:var(--ink2);}
@@ -63,8 +72,8 @@
   /* 管家气泡 */
   .butler{display:flex; gap:12px; align-items:flex-start;}
   .avatar{
-    width:52px; height:52px; flex:0 0 52px; display:grid; place-items:center;
-    font-size:26px; background:var(--yellow); border:4px solid var(--line);
+    width:42px; height:42px; flex:0 0 42px; display:grid; place-items:center;
+    font-size:21px; background:var(--yellow); border:4px solid var(--line);
     box-shadow:4px 4px 0 var(--shadow);
   }
   .bubble{
@@ -76,7 +85,7 @@
     border:7px solid transparent; border-right-color:var(--line);
   }
 
-  .q{font-size:15px; font-weight:800; margin:18px 0 10px; display:flex; align-items:center; gap:8px;}
+  .q{font-size:14.5px; font-weight:800; margin:12px 0 8px; display:flex; align-items:center; gap:8px;}
   .q em{
     font-style:normal; background:var(--red); color:#fff; font-size:11px; padding:1px 7px;
     border:2px solid var(--line); letter-spacing:1px;
@@ -113,7 +122,7 @@
   .talk{margin-top:18px;}
   .talkline{display:flex; gap:10px; margin-top:8px;}
 
-  .actions{display:flex; gap:12px; margin-top:18px;}
+  .actions{display:flex; gap:12px; margin-top:14px;}
   .btn{
     flex:1; border:4px solid var(--line); background:var(--red); color:#fff;
     font-size:17px; font-weight:900; letter-spacing:4px; padding:13px 0; cursor:pointer;
@@ -168,6 +177,12 @@
   .nutline b{color:var(--red);}
   .saveline{margin-top:6px; font-size:12.5px; color:#7a5c33;}
   .imgrow{display:flex; justify-content:flex-end; margin-top:10px;}
+  .orderrow{margin-top:12px; display:flex; gap:10px; align-items:center;}
+  .order{display:inline-block; text-decoration:none; background:var(--yellow); color:var(--ink);
+         border:3px solid var(--line); padding:7px 14px; font-size:13.5px; font-weight:800;
+         box-shadow:4px 4px 0 var(--shadow);}
+  .order:active{transform:translate(3px,3px); box-shadow:1px 1px 0 var(--shadow);}
+  .orderhint{font-size:11.5px; color:var(--ink2);}
   .piximg{width:92px; height:92px; object-fit:contain; padding:6px; background:#fff;
           border:4px solid var(--line); box-shadow:4px 4px 0 var(--shadow);
           image-rendering:pixelated; filter:saturate(1.1) contrast(1.05);}
@@ -205,6 +220,8 @@
 
   <div class="marquee"><span id="marqueeText"></span></div>
 
+  <div class="layout">
+  <aside class="left">
   <div class="px">
     <div class="butler">
       <div class="avatar">🍔</div>
@@ -273,9 +290,14 @@
     <div id="err"></div>
   </div>
 
+  </aside>
+  <section class="right">
   <div id="loading"><span class="dots">管家正在翻菜单</span></div>
   <div id="meta"></div>
   <div id="result"></div>
+
+  </section>
+  </div>
 
   <footer>
     数据来自麦当劳官方 MCP · 价格以门店实际为准<br>
@@ -477,14 +499,12 @@ function render(d){
     const parts = (p.parts||[]).map(x=>{
       const pr = x.price_yuan != null ? `¥${x.price_yuan.toFixed(2)}`
                : (x.single_price_yuan != null ? `单点 ¥${x.single_price_yuan.toFixed(2)}` : "并入套餐");
-      const kc = x.kcal != null ? `${x.kcal} kcal` : "热量未知";
+      const kc = x.kcal != null ? `${x.kcal} kcal` : "";
       return `<div class="prow"><span class="pn">${x.name}</span><span class="pp">${pr}</span><span class="pk">${kc}</span></div>`;
     }).join("");
     const nut = p.nutrition || {};
     let nutLine = "";
     if(nut.kcal != null && nut.complete) nutLine = `热量合计 <b>约 ${nut.kcal} kcal</b> · 蛋白 ${nut.protein_g}g`;
-    else if(nut.matched) nutLine = `热量：已查到 ${nut.matched}/${nut.total} 项，合计约 ${nut.kcal} kcal（其余未知）`;
-    else nutLine = "热量：暂无（子项匹配不到营养表）";
     const pm = p.price || {};
     const saveLine = pm.was ? `原价 ¥${pm.was.toFixed(2)} · 省 ¥${pm.save.toFixed(2)}` : "";
     const img = p.image ? `<div class="imgrow"><img class="piximg" src="${p.image}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentNode.style.display='none'"></div>` : "";
@@ -496,13 +516,17 @@ function render(d){
         <div class="top"><span class="role">${p.label}</span><span class="price">${price}</span></div>
         <div class="name">${p.name}</div>
         ${parts ? `<div class="parts">${parts}</div>` : ""}
-        <div><span class="nutline">${nutLine}</span></div>
+        ${nutLine ? `<div><span class="nutline">${nutLine}</span></div>` : ""}
         ${saveLine ? `<div class="saveline">${saveLine}</div>` : ""}
         <div class="cat">${p.category}</div>
         <div class="why">${p.reason}</div>
         ${tags ? `<div class="tags">${tags}</div>` : ""}
         ${warns}
         ${img}
+        <div class="orderrow">
+          <a class="order" href="https://www.mcdonalds.com.cn/" target="_blank" rel="noopener">去官方下单</a>
+          <span class="orderhint">本工具只负责选，付款与下单在麦当劳官方渠道</span>
+        </div>
       </div>
     </div>`;
   }).join("") + `

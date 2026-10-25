@@ -27,8 +27,9 @@ CACHE_DIR = os.path.join(ROOT, "data", "cache")
 SNAPSHOT_DIR = os.path.join(ROOT, "data", "snapshot")
 CONFIG_PATH = os.path.expanduser(os.path.join("~", ".workbuddy", "mcp.json"))
 
-DEFAULT_STORE = "3350112"          # 麦当劳烟台保利餐厅（离用户最近，实测 599m）
-DEFAULT_STORE_NAME = "麦当劳烟台保利餐厅"
+# 默认门店：实测 5 家里餐品最全的一家（112 个餐品 / 42 个套餐 / 14 个分类，全部有价）
+DEFAULT_STORE = "3350325"
+DEFAULT_STORE_NAME = "麦当劳烟台朝阳街餐厅"
 CACHE_TTL = 600                    # 秒
 
 # 「展示货架」类分类：跨品类的促销橱窗，不是真实品类。
